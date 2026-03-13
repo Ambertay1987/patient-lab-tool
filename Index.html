@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Guide | Unhinged N Loud™</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --bg: #f9f9fb;
+            --text: #2d3436;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            box-sizing: border-box; /* Ensures padding doesn't break width */
+            font-size: 16px; /* Prevents iOS zoom on focus */
+        }
+
+        .result-area {
+            display: none; /* Hidden until a lab is selected */
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        .info-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .doctor-questions {
+            background: #f0f3ff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h2>Lab Results Guide</h2>
+        <p>By Unhinged N Loud™</p>
+    </header>
+
+    <div class="card">
+        <label for="lab-select">Select a Lab Test</label>
+        <select id="lab-select" onchange="updateLabInfo()">
+            <option value="">-- Choose a lab --</option>
+            <option value="CRP">CRP (C-Reactive Protein)</option>
+            <option value="ANA">ANA (Antinuclear Antibody)</option>
+            <option value="ESR">ESR (Sed Rate)</option>
+            <option value="TSH">TSH (Thyroid Stimulating Hormone)</option>
+        </select>
+
+        <div id="result-display" class="result-area">
+            <h3 id="lab-title"></h3>
+            <p><strong>Normal Range:</strong> <span id="lab-range"></span></p>
+            <p id="lab-desc"></p>
+            
+            <div class="doctor-questions">
+                <strong>Ask your doctor:</strong>
+                <ul id="lab-qs"></ul>
+            </div>
+
+            <a href="#" id="lab-link" class="info-link" target="_blank">Read more at Unhinged N Loud™ →</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Lab Data Dictionary
+    const labData = {
+        "CRP": {
+            title: "C-Reactive Protein (CRP)",
+            range: "Below 3.0 mg/L",
+            desc: "CRP is a marker of inflammation in the body. High levels may suggest an autoimmune flare or infection.",
+            qs: ["Is this level consistent with a flare?", "Should we re-test in a month?"],
+            link: "https://unhingednloud.com/inflammation-guides"
+        },
+        "ANA": {
+            title: "Antinuclear Antibody (ANA)",
+            range: "Negative (or low titer like 1:40)",
+            desc: "ANA looks for antibodies that attack your own tissues. A positive result is common in Lupus or Sjogren's.",
+            qs: ["What was my specific pattern (e.g., speckled)?", "Does this confirm a specific diagnosis?"],
+            link: "https://unhingednloud.com/ana-understanding"
+        },
+        "ESR": {
+            title: "Sedimentation Rate (ESR)",
+            range: "0-20 mm/hr (varies by age/sex)",
+            desc: "This measures how quickly red blood cells sink. Faster sinking usually means more inflammation.",
+            qs: ["How does this compare to my baseline?", "Does my anemia affect this result?"],
+            link: "https://unhingednloud.com/esr-basics"
+        },
+        "TSH": {
+            title: "TSH (Thyroid)",
+            range: "0.4 - 4.0 mIU/L",
+            desc: "TSH tells your thyroid how hard to work. High TSH often means Hypothyroidism.",
+            qs: ["Is my dosage correct?", "Should we check Free T3 and T4 as well?"],
+            link: "https://unhingednloud.com/thyroid-health"
+        }
+    };
+
+    function updateLabInfo() {
+        const select = document.getElementById('lab-select');
+        const display = document.getElementById('result-display');
+        const val = select.value;
+
+        if (val && labData[val]) {
+            const data = labData[val];
+            document.getElementById('lab-title').innerText = data.title;
+            document.getElementById('lab-range').innerText = data.range;
+            document.getElementById('lab-desc').innerText = data.desc;
+            document.getElementById('lab-link').href = data.link;
+
+            // Clear and build question list
+            const qsList = document.getElementById('lab-qs');
+            qsList.innerHTML = "";
+            data.qs.forEach(q => {
+                let li = document.createElement('li');
+                li.innerText = q;
+                qsList.appendChild(li);
+            });
+
+            display.style.display = "block";
+        } else {
+            display.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
