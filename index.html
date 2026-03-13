@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Guide | Unhinged N Loud™</title>
+    <style>
+        :root {
+            --primary: #ff4757; /* Vibrant accent color */
+            --dark: #2f3542;    /* Sleek charcoal */
+            --bg: #f1f2f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            color: var(--primary);
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            font-size: 16px;
+            appearance: none;
+            background: white;
+        }
+
+        .result-area {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .doctor-questions {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            margin-top: 20px;
+        }
+
+        .footer-disclaimer {
+            font-size: 0.75em;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid #bdc3c7;
+        }
+
+        .info-link {
+            display: block;
+            margin-top: 20px;
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1 style="margin-bottom:0;">Lab Results Guide</h1>
+        <p style="margin-top:5px; font-weight: bold;">Unhinged N Loud™</p>
+    </header>
+
+    <div class="card">
+        <label>Select Your Test</label>
+        <select id="lab-select" onchange="updateLabInfo()">
+            <option value="">-- Tap to choose --</option>
+            <option value="CRP">CRP (Inflammation)</option>
+            <option value="ANA">ANA (Autoimmune Markers)</option>
+            <option value="ESR">ESR (Sed Rate)</option>
+            <option value="TSH">TSH (Thyroid)</option>
+            <option value="VITD">Vitamin D</option>
+            <option value="RF">Rheumatoid Factor (RF)</option>
+            <option value="B12">Vitamin B12</option>
+        </select>
+
+        <div id="result-display" class="result-area">
+            <h2 id="lab-title" style="color: var(--primary); margin-top:0;"></h2>
+            <p><strong>Typical Range:</strong> <span id="lab-range"></span></p>
+            <p id="lab-desc"></p>
+            
+            <div class="doctor-questions">
+                <strong>Questions for your Doctor:</strong>
+                <ul id="lab-qs" style="padding-left: 20px; margin-top: 10px;"></ul>
+            </div>
+
+            <a href="https://unhingednloud.com" id="lab-link" class="info-link" target="_blank">Full Education Guide →</a>
+        </div>
+    </div>
+
+    <footer class="footer-disclaimer">
+        <strong>MEDICAL DISCLAIMER:</strong> This tool is for educational purposes only and does not constitute medical advice. Always consult with a qualified healthcare provider to interpret your results in the context of your full medical history.
+        <br><br>
+        &copy; 2026 Unhinged N Loud™
+    </footer>
+</div>
+
+<script>
+    const labData = {
+        "CRP": {
+            title: "C-Reactive Protein",
+            range: "Below 3.0 mg/L",
+            desc: "CRP measures general inflammation. In autoimmune conditions, high levels can indicate a flare-up.",
+            qs: ["Does this indicate a current flare?", "Should we compare this to my baseline?"],
+            link: "https://unhingednloud.com"
+        },
+        "ANA": {
+            title: "Antinuclear Antibody",
+            range: "Negative / Low Titer",
+            desc: "ANA identifies antibodies attacking your own cells. It's a key first step in diagnosing many autoimmune diseases.",
+            qs: ["What pattern was detected?", "Does this titer level require more specific testing?"],
+            link: "https://unhingednloud.com"
+        },
+        "ESR": {
+            title: "Sedimentation Rate",
+            range: "0-20 mm/hr",
+            desc: "ESR shows how fast red blood cells settle. Faster rates usually mean more inflammation is present.",
+            qs: ["Is my ESR high because of my condition or a possible infection?", "How has this changed since my last visit?"],
+            link: "https://unhingednloud.com"
+        },
+        "TSH": {
+            title: "TSH (Thyroid)",
+            range: "0.4 - 4.0 mIU/L",
+            desc: "TSH checks thyroid function. Autoimmune issues like Hashimoto's can cause these levels to fluctuate.",
+            qs: ["Is my dosage optimal?", "Do we need to check T3 and T4?"],
+            link: "https://unhingednloud.com"
+        },
+        "VITD": {
+            title: "Vitamin D",
+            range: "30 - 100 ng/mL",
+            desc: "Many autoimmune patients are deficient in Vitamin D, which is vital for immune regulation.",
+            qs: ["Am I deficient?", "What dosage of supplement do you recommend?"],
+            link: "https://unhingednloud.com"
+        },
+        "RF": {
+            title: "Rheumatoid Factor",
+            range: "Below 14 IU/mL",
+            desc: "RF is an antibody often found in Rheumatoid Arthritis, but it can appear in other conditions too.",
+            qs: ["Does a positive RF confirm RA?", "What other symptoms should I track?"],
+            link: "https://unhingednloud.com"
+        },
+        "B12": {
+            title: "Vitamin B12",
+            range: "200 - 900 pg/mL",
+            desc: "B12 is essential for nerve health. Deficiency can cause fatigue and numbness common in autoimmune patients.",
+            qs: ["Is my level in the 'gray zone'?", "Should I try sublingual or injections?"],
+            link: "https://unhingednloud.com"
+        }
+    };
+
+    function updateLabInfo() {
+        const select = document.getElementById('lab-select');
+        const display = document.getElementById('result-display');
+        const val = select.value;
+
+        if (val && labData[val]) {
+            const data = labData[val];
+            document.getElementById('lab-title').innerText = data.title;
+            document.getElementById('lab-range').innerText = data.range;
+            document.getElementById('lab-desc').innerText = data.desc;
+
+            const qsList = document.getElementById('lab-qs');
+            qsList.innerHTML = "";
+            data.qs.forEach(q => {
+                let li = document.createElement('li');
+                li.innerText = q;
+                qsList.appendChild(li);
+            });
+
+            display.style.display = "block";
+        } else {
+            display.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
