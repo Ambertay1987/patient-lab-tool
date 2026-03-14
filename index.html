@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advocacy Guide | Unhinged N Loud™</title>
+    <style>
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-blue: #00d2ff;
+            --neon-green: #39ff14;
+            --neon-purple: #bc13fe;
+            --dark-bg: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --text: #ffffff;
+            --border: #333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 4px solid var(--neon-pink);
+            padding-bottom: 15px;
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            color: var(--neon-blue);
+            letter-spacing: 2px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid var(--neon-blue);
+            border-radius: 12px;
+            font-size: 16px;
+            background: #000;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .result-area {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); margin-top: 25px; }
+        h3 { color: var(--neon-blue); font-size: 1.1rem; margin-top: 25px; border-left: 3px solid var(--neon-blue); padding-left: 10px; }
+        
+        .summary-box {
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid var(--neon-blue);
+            padding: 15px;
+            border-radius: 12px;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .interactive-box {
+            background: #000;
+            border: 1px solid var(--neon-green);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.1);
+        }
+
+        .interpretation-text {
+            color: var(--neon-green);
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .highlight-box {
+            background: rgba(188, 19, 254, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid var(--neon-purple);
+        }
+
+        .advocacy-tip {
+            background: rgba(255, 0, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px dashed var(--neon-pink);
+            margin: 20px 0;
+        }
+
+        .urgent-box {
+            background: #4a0000;
+            color: #ff4d4d;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border: 1px solid #ff4d4d;
+            font-size: 0.9rem;
+        }
+
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 4px; }
+
+        .info-link {
+            display: block;
+            margin-top: 30px;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink));
+            color: white;
+            text-align: center;
+            padding: 15px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .footer-disclaimer {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1 style="margin-bottom:0;">Lab Results Guide</h1>
+        <p style="margin-top:5px; font-weight: bold; letter-spacing: 2px;">UNHINGED N LOUD™</p>
+    </header>
+
+    <div class="card">
+        <label for="lab-select">Select a Lab Test</label>
+        <select id="lab-select" onchange="updateLabInfo()">
+            <option value="">-- Choose a test --</option>
+            <option value="CRP">CRP (C-Reactive Protein)</option>
+            <option value="ESR">ESR (Sed Rate)</option>
+            <option value="ANA">ANA (Antinuclear Antibody)</option>
+            <option value="TSH">TSH (Thyroid)</option>
+            <option value="FER">Ferritin (Iron Storage)</option>
+            <option value="CBC">CBC (Complete Blood Count)</option>
+            <option value="RF">Rheumatoid Factor (RF)</option>
+            <option value="CCP">Anti-CCP Antibody</option>
+        </select>
+
+        <div id="result-display" class="result-area">
+            <h2 id="lab-title"></h2>
+            
+            <div class="summary-box">
+                <span id="lab-summary"></span>
+            </div>
+
+            <div class="interactive-box">
+                <label id="input-label"></label>
+                <input type="number" id="user-value" placeholder="Enter your result..." oninput="interpretResult()">
+                <span id="interpretation" class="interpretation-text"></span>
+            </div>
+
+            <p><strong>Typical Range:</strong> <span id="lab-range" style="color:var(--neon-green)"></span></p>
+
+            <h3>What This Test Measures</h3>
+            <p id="lab-measures"></p>
+
+            <h3>Why Doctors Order It</h3>
+            <ul id="lab-why"></ul>
+
+            <h3>What Elevated Results May Mean</h3>
+            <ul id="lab-high"></ul>
+
+            <h3>What Normal Results May Mean</h3>
+            <p id="lab-normal"></p>
+
+            <h3>Symptoms That May Overlap</h3>
+            <p id="lab-symptoms" style="color: var(--neon-green);"></p>
+
+            <h3>Related Labs</h3>
+            <p id="lab-related" style="color: var(--neon-blue);"></p>
+
+            <div class="highlight-box">
+                <strong style="color: var(--neon-purple);">Trend Matters:</strong><br>
+                <span>One lab value alone does not tell the full story. Doctors often evaluate trends over time, symptoms, imaging, and related lab markers together.</span>
+            </div>
+
+            <h3>Questions to Ask Your Doctor</h3>
+            <ul id="lab-qs"></ul>
+
+            <div class="advocacy-tip">
+                <strong style="color: var(--neon-pink);">UNL™ Advocacy Tip – What to say:</strong><br>
+                <em style="color: #ccc;">" <span id="lab-script"></span> "</em>
+            </div>
+
+            <div class="urgent-box">
+                ⚠️ <strong>URGENT CARE WARNING:</strong> Seek immediate medical attention for chest pain, trouble breathing, fainting, confusion, or rapidly worsening symptoms.
+            </div>
+
+            <a href="https://unhingednloud.com" class="info-link" target="_blank">Full Education Guide →</a>
+        </div>
+    </div>
+
+    <footer class="footer-disclaimer">
+        <strong>EDUCATIONAL DISCLAIMER:</strong> This guide is for educational purposes only and does not diagnose disease or replace professional medical care.
+        <br><br>
+        &copy; 2026 Unhinged N Loud™
+    </footer>
+</div>
+
+<script>
+    const labData = {
+        "CRP": {
+            title: "C-Reactive Protein (CRP)",
+            summary: "This test shows whether inflammation is happening somewhere in the body, but it does not identify the exact cause.",
+            range: "Below 3.0 mg/L",
+            threshold: 3.0,
+            unit: "mg/L",
+            measures: "CRP is a protein produced by the liver that increases when there is active inflammation in the system.",
+            why: ["Detect inflammation", "Monitor autoimmune flares", "Investigate unexplained body aches", "Compare trends over time"],
+            high: ["Autoimmune flare activity", "Recent infection", "Tissue injury", "Chronic inflammatory conditions"],
+            normal: "A normal CRP is common in some autoimmune conditions. Doctors compare this with your physical symptoms and history.",
+            symptoms: "Fatigue, joint pain, stiffness, swelling, fever, body aches.",
+            related: "ESR, ANA, CBC, Rheumatoid Factor, Anti-CCP.",
+            qs: ["How does this compare to my previous results?", "Does this match my current flare symptoms?", "Should we repeat this test later?", "Are additional inflammatory markers needed?"],
+            script: "My CRP is elevated and I'm experiencing fatigue and joint pain. Could this suggest inflammatory activity, and are there additional labs we should review together?"
+        },
+        "ESR": {
+            title: "ESR (Sed Rate)",
+            summary: "The Sed Rate measures how quickly red blood cells sink; faster sinking indicates higher levels of inflammation.",
+            range: "0 - 20 mm/hr",
+            threshold: 20,
+            unit: "mm/hr",
+            measures: "It measures the 'Sedimentation Rate' of red blood cells over one hour.",
+            why: ["Look for unexplained fevers", "Check for long-term inflammation", "Help diagnose inflammatory arthritis"],
+            high: ["Inflammation", "Infection", "Chronic disease", "Pregnancy or Anemia"],
+            normal: "A normal ESR does not rule out disease. Some people have 'low' or normal ESR even during a symptomatic flare.",
+            symptoms: "Stiffness, headaches, neck or shoulder pain, fatigue.",
+            related: "CRP, CBC, ANA.",
+            qs: ["Is this increase significant for my condition?", "Why is my ESR high while my CRP is normal?", "How has this trended over the last year?"],
+            script: "My ESR has trended upward while my morning stiffness has increased. Can we talk about what this means for my current treatment plan?"
+        },
+        "ANA": {
+            title: "Antinuclear Antibody (ANA)",
+            summary: "The ANA test looks for antibodies that attack your own cells. It is often a 'screening' test for autoimmune issues.",
+            range: "Negative",
+            threshold: 0,
+            unit: "Titer (e.g. 160)",
+            measures: "It detects antibodies that mistakenly target the nucleus of your own healthy cells.",
+            why: ["Screen for Lupus or Sjogren's", "Investigate unexplained rashes", "Evaluate persistent joint pain"],
+            high: ["Autoimmune disease", "Chronic infection", "Sometimes seen in healthy individuals"],
+            normal: "A negative ANA is reassuring but some autoimmune conditions are 'ANA-negative.'",
+            symptoms: "Butterfly rash, photosensitivity, joint swelling, dry mouth.",
+            related: "Anti-dsDNA, SSA/SSB, Smith Antibody.",
+            qs: ["What was the specific pattern found?", "Does this titer level require sub-serology testing?", "Is this result definitive?"],
+            script: "My ANA is positive with a speckled pattern. Given my symptoms, what specific follow-up antibody tests should we order next?"
+        },
+        "TSH": {
+            title: "TSH (Thyroid Stimulating Hormone)",
+            summary: "TSH checks how your brain is communicating with your thyroid gland.",
+            range: "0.4 - 4.0 mIU/L",
+            threshold: 4.0,
+            unit: "mIU/L",
+            measures: "The hormone that signals your thyroid to work. High TSH usually means an underactive thyroid (Hypothyroidism).",
+            why: ["Check for thyroid disease", "Monitor thyroid medication", "Investigate fatigue or weight changes"],
+            high: ["Hypothyroidism", "Hashimoto's disease", "Inadequate thyroid medication"],
+            normal: "Standard ranges are broad. Many patients feel best when their TSH is in a tighter 'optimal' range.",
+            symptoms: "Weight gain, hair loss, cold intolerance, brain fog, fatigue.",
+            related: "Free T4, Free T3, TPO Antibodies.",
+            qs: ["Am I in the optimal range or just the standard range?", "Do we need to check my T4 and T3 levels?", "Should we check for thyroid antibodies?"],
+            script: "My TSH is within the normal range, but I'm still feeling very symptomatic. Can we explore if my levels are optimal for my body?"
+        },
+        "FER": {
+            title: "Ferritin (Iron Storage)",
+            summary: "Ferritin tells you how much iron your body has stored for later use.",
+            range: "15 - 150 ng/mL",
+            threshold: 15,
+            unit: "ng/mL",
+            measures: "It measures the protein that stores iron. Low ferritin is a sign of iron deficiency.",
+            why: ["Investigate fatigue", "Check for anemia", "Check for iron overload"],
+            high: ["Inflammation (Ferritin is an acute reactant)", "Liver disease", "Iron overload"],
+            normal: "Standard 'normal' can be as low as 15, but many people feel symptoms of deficiency below 50.",
+            symptoms: "Restless legs, shortness of breath, hair loss, extreme fatigue.",
+            related: "Iron, TIBC, CBC.",
+            qs: ["Is my ferritin high because of inflammation or iron levels?", "Is my level high enough for optimal energy?", "Do I need supplementation?"],
+            script: "My ferritin is 20, which is 'normal,' but I have restless legs and fatigue. Is it possible my iron stores are too low for me?"
+        },
+        "CBC": {
+            title: "CBC (Complete Blood Count)",
+            summary: "A general snapshot of your red cells, white cells, and platelets.",
+            range: "Varies by cell type",
+            threshold: 0,
+            unit: "count",
+            measures: "Counts different types of cells in your blood to check for infection, anemia, or clotting issues.",
+            why: ["General health screening", "Check for infection", "Monitor medication side effects"],
+            high: ["Infection (High WBC)", "Inflammation (High Platelets)", "Dehydration (High RBC)"],
+            normal: "A normal CBC does not rule out autoimmune activity, as it doesn't look at specific autoantibodies.",
+            symptoms: "Easy bruising, frequent infections, dizziness, pale skin.",
+            related: "Metabolic Panel, Ferritin.",
+            qs: ["Are my white cell counts stable?", "Is there any sign of anemia?", "How do these results look compared to my last check?"],
+            script: "My white blood cell count has been trending lower. Could this be related to my current autoimmune medications?"
+        },
+        "RF": {
+            title: "Rheumatoid Factor (RF)",
+            summary: "An antibody test primarily used to help identify Rheumatoid Arthritis.",
+            range: "Below 14 IU/mL",
+            threshold: 14,
+            unit: "IU/mL",
+            measures: "Measures the presence of the RF antibody in the blood.",
+            why: ["Investigate joint pain", "Suspected RA or Sjogren's", "Distinguish between types of arthritis"],
+            high: ["Rheumatoid Arthritis", "Sjogren's Syndrome", "Chronic infections"],
+            normal: "You can have Rheumatoid Arthritis even with a negative RF (Seronegative RA).",
+            symptoms: "Symmetrical joint pain, morning stiffness, swelling in small joints.",
+            related: "Anti-CCP, ESR, CRP.",
+            qs: ["If this is negative, could I still have seronegative RA?", "Does this result confirm a diagnosis?", "What is the next step?"],
+            script: "My RF test was negative, but my hands are swollen and stiff every morning. Can we talk about seronegative arthritis?"
+        },
+        "CCP": {
+            title: "Anti-CCP Antibody",
+            summary: "A highly specific test for Rheumatoid Arthritis that often shows up before symptoms become severe.",
+            range: "Below 20 Units",
+            threshold: 20,
+            unit: "Units",
+            measures: "Detects cyclic citrullinated peptide antibodies.",
+            why: ["Confirm RA diagnosis", "Predict disease progression", "Evaluate early joint pain"],
+            high: ["High likelihood of Rheumatoid Arthritis", "Potential for aggressive disease"],
+            normal: "A negative result doesn't rule out RA, but a positive result is very significant.",
+            symptoms: "Persistent joint pain, erosions on imaging, hand/wrist swelling.",
+            related: "RF, ESR, CRP, Joint X-rays.",
+            qs: ["How specific is this for RA?", "Does a positive result change our treatment plan?", "Do we need baseline X-rays?"],
+            script: "Since my Anti-CCP is positive, I'm concerned about joint damage. What is our plan to manage this aggressively?"
+        }
+    };
+
+    function updateLabInfo() {
+        const select = document.getElementById('lab-select');
+        const display = document.getElementById('result-display');
+        const val = select.value;
+
+        if (val && labData[val]) {
+            const data = labData[val];
+            
+            // Text Content
+            document.getElementById('lab-title').innerText = data.title;
+            document.getElementById('lab-summary').innerText = data.summary;
+            document.getElementById('lab-range').innerText = data.range;
+            document.getElementById('lab-measures').innerText = data.measures;
+            document.getElementById('lab-normal').innerText = data.normal;
+            document.getElementById('lab-symptoms').innerText = data.symptoms;
+            document.getElementById('lab-related').innerText = data.related;
+            document.getElementById('lab-script').innerText = data.script;
+            
+            // Update Interactive Label
+            document.getElementById('input-label').innerText = `Enter your ${val} result (${data.unit}):`;
+            document.getElementById('user-value').value = "";
+            document.getElementById('interpretation').innerText = "";
+
+            // List Helpers
+            const populateList = (id, items) => {
+                const el = document.getElementById(id);
+                el.innerHTML = "";
+                items.forEach(item => {
+                    let li = document.createElement('li');
+                    li.innerText = item;
+                    el.appendChild(li);
+                });
+            };
+
+            populateList('lab-why', data.why);
+            populateList('lab-high', data.high);
+            populateList('lab-qs', data.qs);
+
+            display.style.display = "block";
+            window.scrollTo({ top: display.offsetTop - 20, behavior: 'smooth' });
+        } else {
+            display.style.display = "none";
+        }
+    }
+
+    function interpretResult() {
+        const val = document.getElementById('lab-select').value;
+        const userVal = parseFloat(document.getElementById('user-value').value);
+        const interp = document.getElementById('interpretation');
+        
+        if (!val || isNaN(userVal)) {
+            interp.innerText = "";
+            return;
+        }
+
+        const data = labData[val];
+        
+        // Basic Logic (Note: ANA and CBC are complex, so we use general high/low logic)
+        if (userVal > data.threshold && data.threshold !== 0) {
+            interp.style.color = "var(--neon-pink)";
+            interp.innerText = "Your result appears above the typical reference range. Elevated levels can indicate increased activity or inflammation and should be discussed with your provider.";
+        } else if (userVal <= data.threshold && data.threshold !== 0) {
+            interp.style.color = "var(--neon-green)";
+            interp.innerText = "Your result appears within the typical range. Remember that 'normal' labs can occur even when symptoms are present.";
+        } else {
+            interp.style.color = "var(--neon-blue)";
+            interp.innerText = "Result entered. Please compare this with the typical ranges and discuss trends with your doctor.";
+        }
+    }
+</script>
+
+</body>
+</html>
