@@ -19,7 +19,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstati
 
 const firebaseConfig = {
   apiKey: "AIzaSyD3DWl3GOpPa-6l7JSx3RKfc9Ha945-f8w",
-  : "lab-decoder",
+  authDomain: "lab-decoder.firebaseapp.com",
+  projectId: "lab-decoder",
   messagingSenderId: "109714561468",
   appId: "1:109714561468:web:7d395ce5519d9c032b73b9"
 };
@@ -28,18 +29,17 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-window.login = function() {
-window.addEventListener("DOMContentLoaded", function() {
+const button = document.getElementById("loginBtn");
 
-  document.getElementById("loginBtn").addEventListener("click", function() {
-    signInWithPopup(auth, provider)
-      .then(() => {
-        document.getElementById("status").innerText = "Logged in ✅";
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  });
-
+button.addEventListener("click", async function () {
+  try {
+    await signInWithPopup(auth, provider);
+    document.getElementById("status").innerText = "Logged in ✅";
+  } catch (error) {
+    alert(error.message);
+  }
 });
+
 </script>
+</body>
+</html>
