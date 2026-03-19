@@ -2,44 +2,69 @@
 <html>
 <head>
 <title>Lab Decoder</title>
+
+<style>
+body {
+  background: black;
+  color: #00ffff;
+  font-family: Arial;
+  text-align: center;
+  padding-top: 50px;
+}
+
+h1 {
+  color: #00ffff;
+  text-shadow: 0 0 10px #00ffff;
+}
+
+input {
+  padding: 10px;
+  margin: 10px;
+  background: black;
+  border: 1px solid #00ffff;
+  color: #00ffff;
+}
+
+button {
+  padding: 10px 20px;
+  background: #00ffff;
+  border: none;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#result {
+  margin-top: 20px;
+  font-size: 20px;
+}
+</style>
+
 </head>
 
 <body>
 
-<h1>Lab Decoder</
+<h1>Lab Decoder</h1>
 
-<p id="status">Not logged in</p>
+<input id="lab" placeholder="Enter lab value">
+<br>
+<button onclick="analyze()">Analyze</button>
 
-<button id="loginBtn">Login with Google</button>
+<div id="result"></div>
 
-<script type="module">
+<script>
+function analyze() {
+  let value = document.getElementById("lab").value;
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyD3DWl3GOpPa-6l7JSx3RKfc9Ha945-f8w",
-  authDomain: "lab-decoder.firebaseapp.com",
-  projectId: "lab-decoder",
-  messagingSenderId: "109714561468",
-  appId: "1:109714561468:web:7d395ce5519d9c032b73b9"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-
-const button = document.getElementById("loginBtn");
-
-button.addEventListener("click", async function () {
-  try {
-    await signInWithPopup(auth, provider);
-    document.getElementById("status").innerText = "Logged in ✅";
-  } catch (error) {
-    alert(error.message);
+  if (value < 50) {
+    document.getElementById("result").innerText = "Low — possible deficiency";
+  } else if (value > 100) {
+    document.getElementById("result").innerText = "High — possible inflammation";
+  } else {
+    document.getElementById("result").innerText = "Within range";
   }
-});
-
+}
 </script>
+
 </body>
 </html>
