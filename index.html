@@ -15,20 +15,29 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD3DWl3GOpPa-6l7JSx3RKfc9Ha945-f8w",
-  authDomain: "lab-decoder.firebaseapp.com",
-  projectId: "lab-decoder",
+  : "lab-decoder",
   messagingSenderId: "109714561468",
   appId: "1:109714561468:web:7d395ce5519d9c032b73b9"
 };
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 window.login = function() {
-  document.getElementById("status").innerText = "Firebase ready ✅";
-};
+document.getElementById("loginBtn").addEventListener("click", function() {
+  signInWithPopup(auth, provider)
+    .then(() => {
+      document.getElementById("status").innerText = "Logged in ✅";
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+});
 
 </script>
 
