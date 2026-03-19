@@ -8,7 +8,8 @@
 <p id="status"<Connecting...</p>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-const firebaseConfig = {
+import { getAuth, SignInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js"
+  const firebaseConfig = {
   apiKey: "AIzaSyD3DWl3GOpPa-6l7JSx3RKfc9Ha945-f8w",
   authDomain: "lab-decoder.firebaseapp.com",
   projectId: "lab-decoder",
@@ -17,6 +18,18 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+window.login = function() {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      document.getElementById("status").innerText = "Logged in ✅";
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+};
 console.log("Firebase is live ✅");
 
 document.getElementById("status").innerText = "Firebase connected ✅";
