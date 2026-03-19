@@ -9,15 +9,14 @@ body {
   color: #00ffff;
   font-family: Arial;
   text-align: center;
-  padding-top: 50px;
+  padding: 40px;
 }
 
 h1 {
-  color: #00ffff;
   text-shadow: 0 0 10px #00ffff;
 }
 
-input {
+select, input {
   padding: 10px;
   margin: 10px;
   background: black;
@@ -36,7 +35,8 @@ button {
 
 #result {
   margin-top: 20px;
-  font-size: 20px;
+  font-size: 18px;
+  white-space: pre-line;
 }
 </style>
 
@@ -46,23 +46,76 @@ button {
 
 <h1>Lab Decoder</h1>
 
-<input id="lab" placeholder="Enter lab value">
+<select id="labType">
+  <option value="vitaminD">Vitamin D</option>
+  <option value="b12">Vitamin B12</option>
+  <option value="ferritin">Ferritin</option>
+  <option value="crp">CRP (Inflammation)</option>
+  <option value="tsh">TSH (Thyroid)</option>
+</select>
+
 <br>
+
+<input id="value" placeholder="Enter your lab value">
+
+<br>
+
 <button onclick="analyze()">Analyze</button>
 
 <div id="result"></div>
 
 <script>
 function analyze() {
-  let value = document.getElementById("lab").value;
+  let lab = document.getElementById("labType").value;
+  let value = parseFloat(document.getElementById("value").value);
 
-  if (value < 50) {
-    document.getElementById("result").innerText = "Low — possible deficiency";
-  } else if (value > 100) {
-    document.getElementById("result").innerText = "High — possible inflammation";
-  } else {
-    document.getElementById("result").innerText = "Within range";
+  let result = "";
+
+  if (lab === "vitaminD") {
+    if (value < 30) {
+      result = "Low Vitamin D\nMay affect immune system\nAsk about: Vitamin D supplementation";
+    } else {
+      result = "Normal Vitamin D";
+    }
   }
+
+  if (lab === "b12") {
+    if (value < 400) {
+      result = "Low B12\nCan cause fatigue and brain fog\nAsk about: B12 injections or supplements";
+    } else {
+      result = "Normal B12";
+    }
+  }
+
+  if (lab === "ferritin") {
+    if (value < 50) {
+      result = "Low Ferritin\nMay indicate iron deficiency\nAsk about: Iron panel";
+    } else if (value > 150) {
+      result = "High Ferritin\nPossible inflammation\nAsk about: CRP, ESR";
+    } else {
+      result = "Normal Ferritin";
+    }
+  }
+
+  if (lab === "crp") {
+    if (value > 3) {
+      result = "High CRP\nIndicates inflammation\nAsk about: autoimmune testing";
+    } else {
+      result = "Normal CRP";
+    }
+  }
+
+  if (lab === "tsh") {
+    if (value > 4) {
+      result = "High TSH\nPossible hypothyroidism\nAsk about: Free T3, Free T4, antibodies";
+    } else if (value < 0.4) {
+      result = "Low TSH\nPossible hyperthyroidism";
+    } else {
+      result = "Normal TSH";
+    }
+  }
+
+  document.getElementById("result").innerText = result;
 }
 </script>
 
