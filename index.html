@@ -29,16 +29,19 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 window.login = function() {
-document.getElementById("loginBtn").addEventListener("click", function() {
-  signInWithPopup(auth, provider)
-    .then(() => {
-      document.getElementById("status").innerText = "Logged in ✅";
-    })
-    .catch((error) => {
-      alert(error.message);
-    });
-});
+window.addEventListener("DOMContentLoaded", function() {
 
+  document.getElementById("loginBtn").addEventListener("click", function() {
+    signInWithPopup(auth, provider)
+      .then(() => {
+        document.getElementById("status").innerText = "Logged in ✅";
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  });
+
+});
 </script>
 
 </body>
