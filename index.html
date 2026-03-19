@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lab Decoder</title>
+</head>
+
+<body>
+  <h1>Lab Decoder</h1>
+  <p>Firebase is being connected...</p>
+
+  <button onclick="testFirebase()">Test Firebase</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+    const firebaseConfig = {
+      apiKey: "PASTE_YOUR_API_KEY_HERE",
+      authDomain: "lab-decoder.firebaseapp.com",
+      projectId: "lab-decoder",
+      storageBucket: "lab-decoder.appspot.com",
+      messagingSenderId: "PASTE_THIS_TOO",
+      appId: "PASTE_THIS_TOO"
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    console.log("Firebase connected ✅");
+
+    window.testFirebase = function() {
+      alert("Firebase is working ✅");
+    }
+  </script>
+</body>
+</html>
