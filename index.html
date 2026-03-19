@@ -5,10 +5,11 @@
 </head>
 <body> 
 <h1>Lab Decoder</h1>
+<button onclick="login()">Login</button>
 <p id="status"<Connecting...</p>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-import { getAuth, signinwithpopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js"
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js"
   const firebaseConfig = {
   apiKey: "AIzaSyD3DWl3GOpPa-6l7JSx3RKfc9Ha945-f8w",
   authDomain: "lab-decoder.firebaseapp.com",
