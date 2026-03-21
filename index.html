@@ -1,0 +1,263 @@
+Patient
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE LAB | Lab Trend Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --neon-green: #39FF14; 
+            --neon-cyan: #00F3FF;
+            --neon-pink: #FF00FF;
+            --neon-orange: #FFAC1C;
+            --dark-bg: #000000; 
+        }
+        body { background-color: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; }
+        
+        /* Neon Borders */
+        .border-cyan { border: 2px solid var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+        .border-green { border: 2px solid var(--neon-green); box-shadow: 0 0 10px rgba(57, 255, 20, 0.3); }
+        .border-pink { border: 2px solid var(--neon-pink); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3); }
+        
+        /* Neon Text */
+        .text-cyan { color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan); }
+        .text-pink { color: var(--neon-pink); text-shadow: 0 0 5px var(--neon-pink); }
+        .text-orange { color: var(--neon-orange); text-shadow: 0 0 5px var(--neon-orange); }
+        
+        .btn-action { 
+            border: 2px solid white; transition: 0.3s; text-transform: uppercase; font-weight: 900;
+        }
+        .btn-cyan:hover { background: var(--neon-cyan); border-color: var(--neon-cyan); color: black; }
+        
+        input { background: #111; border: 1px solid #333; color: white; padding: 10px; border-radius: 4px; width: 100%; }
+        input:focus { border-color: var(--neon-cyan); outline: none; }
+        
+        @media print { .no-print { display: none; } body { background: white; color: black; } }
+    </style>
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WCZGVDZH0J"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-WCZGVDZH0J');
+</script>
+
+<body class="p-4 md:p-10">
+
+    <nav class="mb-6 no-print">
+        <a href="index.html" class="text-cyan font-bold tracking-tighter">← RETURN TO HUB</a>
+    </nav>
+
+    <header class="mb-10">
+        <h1 class="text-5xl md:text-7xl font-black text-cyan mb-2 italic uppercase">Lab Trend Visualizer™</h1>
+        <p class="text-gray-400 font-bold uppercase tracking-widest text-sm">Organize your receipts. Spot the patterns. Be Unhinged N Loud™.</p>
+    </header>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+        <section class="lg:col-span-1 no-print">
+            <div class="border-cyan p-6 rounded-lg bg-black">
+                <h2 class="text-xl font-black mb-4 uppercase italic">Add Lab Entry</h2>
+                <div class="space-y-4">
+                    <div><label class="text-xs uppercase font-bold text-gray-500">Date</label><input type="date" id="labDate"></div>
+                    <div><label class="text-xs uppercase font-bold text-gray-500">Lab Name (e.g. CRP, TSH)</label><input type="text" id="labName" placeholder="CRP"></div>
+                    <div><label class="text-xs uppercase font-bold text-gray-500">Your Result</label><input type="number" id="labResult" step="any" placeholder="12.5"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="text-xs uppercase font-bold text-gray-500">Ref Low</label><input type="number" id="refLow" step="any"></div>
+                        <div><label class="text-xs uppercase font-bold text-gray-500">Ref High</label><input type="number" id="refHigh" step="any"></div>
+                    </div>
+                    <button onclick="addEntry()" class="w-full py-4 btn-action btn-cyan text-cyan">Update Visualization</button>
+                    <button onclick="loadDemoData()" class="w-full text-xs text-gray-500 hover:text-white uppercase mt-2">Load Demo Data</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="lg:col-span-2 space-y-8">
+            <div class="border-green p-6 rounded-lg bg-black min-h-[300px]">
+                <h2 class="text-xl font-black mb-4 text-green-400 italic">TREND LINE</h2>
+                <canvas id="trendChart"></canvas>
+            </div>
+
+            <div id="summaryCard" class="hidden bg-white text-black p-8 rounded-none border-l-[12px] border-black">
+                <div class="flex justify-between items-start border-b-8 border-black pb-4 mb-6">
+                    <h2 class="text-4xl font-black uppercase leading-none">The Receipts</h2>
+                    <p class="text-xs font-bold uppercase text-right">Unhinged N Loud™<br>Advocacy Toolkit</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div id="statusAlert" class="p-4 bg-black text-white font-black text-xl italic uppercase"></div>
+                    
+                    <div>
+                        <h3 class="font-black text-lg underline">TREND ANALYSIS:</h3>
+                        <p id="trendAnalysis" class="text-xl"></p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-4 border-2 border-black">
+                            <h3 class="font-black text-pink-600 uppercase">Out of Range Warnings</h3>
+                            <ul id="warningsList" class="list-disc pl-5 font-bold"></ul>
+                        </div>
+                        <div class="p-4 border-2 border-black bg-yellow-50">
+                            <h3 class="font-black text-orange-600 uppercase">Questions for Follow-up</h3>
+                            <ul id="followUpList" class="list-disc pl-5 italic"></ul>
+                        </div>
+                    </div>
+
+                    <p class="text-[10px] mt-10 uppercase font-bold border-t border-gray-300 pt-2">
+                        Disclaimer: This summary was generated for organizational purposes. It is not medical advice. Consult your physician.
+                    </p>
+                </div>
+                
+                <div class="mt-8 no-print flex gap-4">
+                    <button onclick="window.print()" class="bg-black text-white px-6 py-3 font-black uppercase hover:bg-gray-800 flex-1">Print for Doctor</button>
+                    <button onclick="location.reload()" class="border-2 border-black px-6 py-3 font-black uppercase hover:bg-gray-100 flex-1">Clear All</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let labEntries = [];
+        let chart = null;
+
+        function addEntry() {
+            const entry = {
+                date: document.getElementById('labDate').value,
+                name: document.getElementById('labName').value.toUpperCase(),
+                val: parseFloat(document.getElementById('labResult').value),
+                low: parseFloat(document.getElementById('refLow').value),
+                high: parseFloat(document.getElementById('refHigh').value)
+            };
+
+            if(!entry.date || isNaN(entry.val)) return alert("Date and Result are required.");
+
+            labEntries.push(entry);
+            labEntries.sort((a,b) => new Date(a.date) - new Date(b.date));
+            renderAll();
+        }
+
+        function loadDemoData() {
+            labEntries = [
+                {date: '2025-10-01', name: 'CRP', val: 5.2, low: 0, high: 3.0},
+                {date: '2025-11-15', name: 'CRP', val: 8.4, low: 0, high: 3.0},
+                {date: '2026-01-20', name: 'CRP', val: 12.1, low: 0, high: 3.0}
+            ];
+            renderAll();
+        }
+
+        function renderAll() {
+            updateChart();
+            generateAdvocacySheet();
+            document.getElementById('summaryCard').classList.remove('hidden');
+        }
+
+        function updateChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            if(chart) chart.destroy();
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labEntries.map(e => e.date),
+                    datasets: [{
+                        label: labEntries[0].name,
+                        data: labEntries.map(e => e.val),
+                        borderColor: '#39FF14',
+                        backgroundColor: 'rgba(57, 255, 20, 0.1)',
+                        fill: true,
+                        pointRadius: 8,
+                        pointBackgroundColor: '#00F3FF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { ticks: { color: '#aaa' }, grid: { color: '#222' } },
+                        x: { ticks: { color: '#aaa' }, grid: { color: '#222' } }
+                    },
+                    plugins: { legend: { labels: { color: 'white', font: { weight: 'bold' } } } }
+                }
+            });
+        }
+
+        function generateAdvocacySheet() {
+            const last = labEntries[labEntries.length - 1];
+            const name = last.name;
+            const statusBox = document.getElementById('statusAlert');
+            const analysis = document.getElementById('trendAnalysis');
+            
+            // Logic for status
+            if (last.val > last.high) {
+                statusBox.innerText = `ALERT: ${name} IS ELEVATED`;
+                statusBox.style.backgroundColor = "var(--neon-pink)";
+            } else if (last.val < last.low) {
+                statusBox.innerText = `ALERT: ${name} IS BELOW RANGE`;
+                statusBox.style.backgroundColor = "var(--neon-cyan)";
+                statusBox.style.color = "black";
+            } else {
+                statusBox.innerText = `${name} IS WITHIN REFERENCE RANGE`;
+                statusBox.style.backgroundColor = "var(--neon-green)";
+                statusBox.style.color = "black";
+            }
+
+            // Directional Logic
+            let direction = "";
+            if (labEntries.length > 1) {
+                const prev = labEntries[labEntries.length - 2].val;
+                direction = last.val > prev ? "trending UPWARD" : "trending DOWNWARD";
+            }
+
+            analysis.innerText = `The most recent ${name} result is ${last.val}. Over ${labEntries.length} entries, the values are ${direction}. This indicates a persistent pattern that requires clinical review.`;
+
+            // Questions
+            document.getElementById('followUpList').innerHTML = `
+                <li>"How does this ${direction} trend correlate with my reported flares?"</li>
+                <li>"Is this ${name} result a primary indicator or secondary to another process?"</li>
+                <li>"At what threshold do we consider changing the current treatment plan?"</li>
+            `;
+            
+            document.getElementById('warningsList').innerHTML = last.val > last.high ? 
+                `<li>Result ${last.val} exceeds high reference of ${last.high}</li>` : `<li>No critical out-of-range flags for current entry.</li>`;
+        }
+    </script>
+ <footer style="
+  margin-top: 60px;
+  padding: 25px;
+  text-align: center;
+  font-size: 12px;
+  border-top: 1px solid #00f0ff;
+  background: rgba(0,0,0,0.8);
+">
+    <p style="color:#00f0ff;">
+  © 2026 Unhinged N Loud™. All rights reserved.
+</p>
+
+    <p style="color:#aaa;">
+        All tools, systems, and frameworks are proprietary intellectual property.
+    </p>
+
+    <p style="margin-top:10px; color:#00f0ff;">
+  Be Loud. Bring Receipts.
+</p>
+
+<p style="color:#888; font-size:10px;">
+  Use of this platform is subject to proprietary rights and terms.
+</p>
+
+<p style="margin-top:15px; font-size:11px;">
+  <a href="terms.html" style="color:#00f0ff;">Terms</a> |
+  <a href="privacy.html" style="color:#00f0ff;">Privacy</a> |
+  <a href="disclaimer.html" style="color:#00f0ff;">Medical Disclaimer</a>
+</p>
+</footer>
+
+</body>
+</html>
