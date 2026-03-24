@@ -273,6 +273,21 @@
             document.getElementById('warningsList').innerHTML = last.val > last.high ? 
                 `<li>Result ${last.val} exceeds high reference of ${last.high}</li>` : `<li>No critical out-of-range flags for current entry.</li>`;
         }
+   function handlePrint() {
+  const email = prompt(
+    "Get your FULL Autoimmune Report + Symptom Tracker + Doctor Guide 📊\n\nEnter your email to download:"
+  );
+
+  if (email && email.includes("@")) {
+    console.log("Captured email:", email);
+
+    alert("Your report is being prepared! You can now print.");
+
+    window.print();
+  } else {
+    alert("Please enter a valid email to continue.");
+  }
+}
     </script>
  <footer style="
   margin-top: 60px;
