@@ -1,82 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Optional Google Analytics: paste your GA tag below if you want it -->
-  <!--
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-  </script>
-  -->
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UNL™ Symptom & Flare Tracker</title>
+  <title>UNL™ Symptom Log</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --neon-green: #39ff14;
       --neon-cyan: #00f3ff;
       --neon-pink: #ff00ff;
+      --neon-green: #39ff14;
       --neon-orange: #ffac1c;
-      --dark-bg: #050505;
-      --card-bg: #0d0d0d;
-      --muted: #aaaaaa;
+      --bg: #050505;
+      --card: #0d0d0d;
     }
 
-    * { box-sizing: border-box; }
     body {
       margin: 0;
+      font-family: 'Inter', sans-serif;
       background:
         radial-gradient(circle at top left, rgba(0,243,255,0.08), transparent 28%),
         radial-gradient(circle at top right, rgba(255,0,255,0.08), transparent 25%),
         linear-gradient(180deg, #000000 0%, #060606 100%);
       color: white;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .glass {
-      background: rgba(10,10,10,0.88);
-      backdrop-filter: blur(8px);
     }
 
     .border-cyan {
       border: 2px solid var(--neon-cyan);
-      box-shadow: 0 0 12px rgba(0,243,255,0.30);
-    }
-
-    .border-green {
-      border: 2px solid var(--neon-green);
-      box-shadow: 0 0 12px rgba(57,255,20,0.25);
+      box-shadow: 0 0 12px rgba(0,243,255,0.25);
     }
 
     .border-pink {
       border: 2px solid var(--neon-pink);
-      box-shadow: 0 0 12px rgba(255,0,255,0.25);
-    }
-
-    .border-orange {
-      border: 2px solid var(--neon-orange);
-      box-shadow: 0 0 12px rgba(255,172,28,0.25);
+      box-shadow: 0 0 12px rgba(255,0,255,0.2);
     }
 
     .text-cyan {
       color: var(--neon-cyan);
-      text-shadow: 0 0 8px rgba(0,243,255,0.5);
-    }
-
-    .text-green {
-      color: var(--neon-green);
-      text-shadow: 0 0 8px rgba(57,255,20,0.45);
+      text-shadow: 0 0 8px rgba(0,243,255,0.45);
     }
 
     .text-pink {
@@ -84,56 +50,19 @@
       text-shadow: 0 0 8px rgba(255,0,255,0.45);
     }
 
-    .text-orange {
-      color: var(--neon-orange);
-      text-shadow: 0 0 8px rgba(255,172,28,0.45);
+    .card {
+      background: rgba(10,10,10,0.92);
+      border-radius: 20px;
     }
 
-    .btn-action {
-      width: 100%;
-      padding: 12px 16px;
+    .label {
+      display: block;
+      font-size: 12px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      border-radius: 12px;
-      transition: 0.25s ease;
-      cursor: pointer;
-    }
-
-    .btn-cyan {
-      background: transparent;
-      color: white;
-      border: 2px solid var(--neon-cyan);
-    }
-
-    .btn-cyan:hover {
-      background: var(--neon-cyan);
-      color: black;
-      box-shadow: 0 0 18px rgba(0,243,255,0.55);
-    }
-
-    .btn-pink {
-      background: transparent;
-      color: white;
-      border: 2px solid var(--neon-pink);
-    }
-
-    .btn-pink:hover {
-      background: var(--neon-pink);
-      color: black;
-      box-shadow: 0 0 18px rgba(255,0,255,0.55);
-    }
-
-    .btn-green {
-      background: transparent;
-      color: white;
-      border: 2px solid var(--neon-green);
-    }
-
-    .btn-green:hover {
-      background: var(--neon-green);
-      color: black;
-      box-shadow: 0 0 18px rgba(57,255,20,0.55);
+      letter-spacing: .08em;
+      color: #b3b3b3;
+      margin-bottom: 6px;
     }
 
     input, textarea, select {
@@ -142,275 +71,163 @@
       border: 1px solid #333;
       color: white;
       padding: 12px;
-      border-radius: 10px;
+      border-radius: 12px;
       outline: none;
     }
 
     input:focus, textarea:focus, select:focus {
       border-color: var(--neon-cyan);
-      box-shadow: 0 0 0 2px rgba(0,243,255,0.15);
+      box-shadow: 0 0 0 2px rgba(0,243,255,0.12);
     }
 
     textarea {
-      min-height: 110px;
+      min-height: 90px;
       resize: vertical;
     }
 
-    .label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 12px;
+    .btn {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
       font-weight: 800;
-      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #b3b3b3;
+      letter-spacing: .08em;
+      cursor: pointer;
+      transition: .2s ease;
     }
 
-    .entry-chip {
+    .btn-cyan {
+      border: 2px solid var(--neon-cyan);
+      background: transparent;
+      color: white;
+    }
+
+    .btn-cyan:hover {
+      background: var(--neon-cyan);
+      color: black;
+    }
+
+    .btn-pink {
+      border: 2px solid var(--neon-pink);
+      background: transparent;
+      color: white;
+    }
+
+    .btn-pink:hover {
+      background: var(--neon-pink);
+      color: black;
+    }
+
+    .entry {
       border: 1px solid #2a2a2a;
       border-left: 4px solid var(--neon-cyan);
+      border-radius: 14px;
+      padding: 14px;
       background: rgba(255,255,255,0.02);
-      border-radius: 12px;
-      padding: 12px;
     }
 
-    .hidden-print {
-      display: block;
-    }
-
-    .print-only {
-      display: none;
-    }
-
-    @media print {
-      body {
-        background: white !important;
-        color: black !important;
-      }
-
-      .no-print {
-        display: none !important;
-      }
-
-      .print-only {
-        display: block !important;
-      }
-
-      .print-card {
-        border: 2px solid black !important;
-        box-shadow: none !important;
-        background: white !important;
-        color: black !important;
-      }
-
-      canvas {
-        max-height: 280px !important;
-      }
-
-      a {
-        color: black !important;
-        text-decoration: none !important;
-      }
+    footer {
+      margin-top: 50px;
+      padding: 25px;
+      text-align: center;
+      font-size: 12px;
+      border-top: 1px solid #00f0ff;
+      background: rgba(0,0,0,0.8);
     }
   </style>
 </head>
 <body class="p-4 md:p-8">
-  <div class="max-w-7xl mx-auto">
-    <nav class="mb-6 no-print">
-      <a href="https://unhingednloud.github.io/unhinged-advocacy-toolkit/" class="text-cyan font-extrabold tracking-widest uppercase">
+  <div class="max-w-4xl mx-auto">
+    <nav class="mb-6">
+      <a href="https://unhingednloud.github.io/unhinged-advocacy-toolkit/" class="text-cyan font-extrabold uppercase tracking-widest">
         ← Return to Advocacy Toolkit
       </a>
     </nav>
 
-    <header class="mb-10">
-      <p class="text-pink font-extrabold uppercase tracking-[0.25em] text-sm md:text-base mb-3">
+    <header class="mb-8">
+      <p class="text-pink font-extrabold uppercase tracking-[0.25em] text-sm mb-3">
         Unhinged N Loud™ Advocacy Series
       </p>
 
       <h1 class="text-cyan text-4xl md:text-6xl font-black italic uppercase leading-none mb-4">
-        UNL™ Symptom & Flare Tracker
+        UNL™ Symptom Log
       </h1>
 
-      <p class="text-white text-lg md:text-2xl font-bold max-w-4xl">
-        Your symptoms are not random. Track patterns in flares, food, stress, sleep, digestion, and daily symptoms so you can start connecting the dots.
+      <p class="text-white text-lg md:text-2xl font-bold max-w-3xl">
+        A simple daily log to help you keep track of symptoms without a giant tracker.
       </p>
 
-      <p class="text-gray-400 mt-4 max-w-3xl">
-        This tracker is built to help you organize your day-to-day patterns and walk into appointments with something clear, documented, and real.
+      <p class="text-gray-400 mt-3 max-w-2xl">
+        Just log the day, symptom, severity, possible trigger, and notes.
       </p>
     </header>
 
-    <div class="grid lg:grid-cols-3 gap-8">
-      <!-- Form -->
-      <section class="lg:col-span-1 no-print">
-        <div class="glass border-cyan rounded-2xl p-6">
-          <h2 class="text-xl font-black uppercase italic text-cyan mb-2">Track Your Day</h2>
-          <p class="text-sm text-gray-400 mb-6">
-            Log one entry at a time. The chart and printable summary will update automatically.
-          </p>
+    <div class="grid md:grid-cols-2 gap-8">
+      <section class="card border-cyan p-6">
+        <h2 class="text-cyan text-xl font-black uppercase italic mb-4">Daily Entry</h2>
 
-          <div class="space-y-4">
-            <div>
-              <label class="label" for="entryDate">Date</label>
-              <input type="date" id="entryDate" />
-            </div>
+        <div class="space-y-4">
+          <div>
+            <label class="label" for="entryDate">Date</label>
+            <input type="date" id="entryDate">
+          </div>
 
-            <div>
-              <label class="label" for="symptom">Primary Symptom</label>
-              <input type="text" id="symptom" placeholder="fatigue, joint pain, brain fog..." />
-            </div>
+          <div>
+            <label class="label" for="symptom">Symptom</label>
+            <input type="text" id="symptom" placeholder="fatigue, pain, dizziness, brain fog">
+          </div>
 
-            <div>
-              <label class="label" for="severity">Symptom Severity (1–10)</label>
-              <input type="number" id="severity" min="1" max="10" placeholder="1 to 10" />
-            </div>
+          <div>
+            <label class="label" for="severity">Severity</label>
+            <select id="severity">
+              <option value="">Select severity</option>
+              <option value="1">1 - Very mild</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5 - Moderate</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10 - Severe</option>
+            </select>
+          </div>
 
-            <div>
-              <label class="label" for="flare">Flare Day?</label>
-              <select id="flare">
-                <option value="">Select</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
+          <div>
+            <label class="label" for="trigger">Possible Trigger</label>
+            <input type="text" id="trigger" placeholder="food, stress, poor sleep, cycle, weather">
+          </div>
 
-            <div>
-              <label class="label" for="food">Food / Meals</label>
-              <input type="text" id="food" placeholder="what you ate today" />
-            </div>
+          <div>
+            <label class="label" for="notes">Notes</label>
+            <textarea id="notes" placeholder="What stood out today?"></textarea>
+          </div>
 
-            <div>
-              <label class="label" for="stress">Stress Level (1–10)</label>
-              <input type="number" id="stress" min="1" max="10" placeholder="1 to 10" />
-            </div>
-
-            <div>
-              <label class="label" for="sleep">Sleep (hours)</label>
-              <input type="number" id="sleep" min="0" max="24" step="0.5" placeholder="example: 6.5" />
-            </div>
-
-            <div>
-              <label class="label" for="meds">Medications / Supplements</label>
-              <input type="text" id="meds" placeholder="list what you took" />
-            </div>
-
-            <div>
-              <label class="label" for="digestion">Digestion / Bowel Notes</label>
-              <input type="text" id="digestion" placeholder="bloating, nausea, constipation..." />
-            </div>
-
-            <div>
-              <label class="label" for="cycle">Cycle / Hormone Notes</label>
-              <input type="text" id="cycle" placeholder="ovulation, PMS, period, hormone shift..." />
-            </div>
-
-            <div>
-              <label class="label" for="notes">Notes</label>
-              <textarea id="notes" placeholder="anything else you want to remember about today"></textarea>
-            </div>
-
-            <div class="grid grid-cols-1 gap-3 pt-2">
-              <button onclick="addEntry()" class="btn-action btn-cyan">Add Entry</button>
-              <button onclick="loadDemoData()" class="btn-action btn-green">Load Demo Data</button>
-              <button onclick="clearAllEntries()" class="btn-action btn-pink">Clear All Entries</button>
-            </div>
+          <div class="grid gap-3">
+            <button class="btn btn-cyan" onclick="saveEntry()">Save Entry</button>
+            <button class="btn btn-pink" onclick="clearAllEntries()">Clear All Entries</button>
           </div>
         </div>
       </section>
 
-      <!-- Main -->
-      <section class="lg:col-span-2 space-y-8">
-        <div class="glass border-green rounded-2xl p-6 min-h-[320px]">
-          <h2 class="text-xl font-black uppercase italic text-green mb-4">Trend Line</h2>
-          <canvas id="trendChart"></canvas>
+      <section class="card border-pink p-6">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <h2 class="text-pink text-xl font-black uppercase italic">Recent Log</h2>
+          <span class="text-xs uppercase tracking-widest text-gray-400">Last 6 only</span>
         </div>
 
-        <div id="summaryCard" class="hidden print-card bg-white text-black rounded-2xl p-6 md:p-8 border-4 border-black">
-          <div class="flex justify-between items-start gap-4 border-b-4 border-black pb-4 mb-6">
-            <div>
-              <h2 class="text-3xl md:text-4xl font-black uppercase leading-none">Symptom Summary</h2>
-              <p class="font-bold uppercase text-sm mt-2">Unhinged N Loud™ Tracker Report</p>
-            </div>
-            <div class="text-right text-xs font-bold uppercase">
-              UNL™<br>Pattern Tracker
-            </div>
-          </div>
-
-          <div id="statusAlert" class="p-4 text-white font-black text-lg uppercase mb-6">
-            Status
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <div class="border-2 border-black p-4">
-              <h3 class="font-black text-lg uppercase underline mb-2">Trend Analysis</h3>
-              <p id="trendAnalysis" class="text-base leading-relaxed"></p>
-            </div>
-
-            <div class="border-2 border-black p-4">
-              <h3 class="font-black text-lg uppercase underline mb-2">Possible Patterns</h3>
-              <ul id="patternList" class="list-disc pl-5 space-y-1 font-medium"></ul>
-            </div>
-          </div>
-
-          <div class="border-2 border-black p-4 mb-6">
-            <h3 class="font-black text-lg uppercase underline mb-2">What This Means For You</h3>
-            <p class="text-sm md:text-base">
-              Your symptoms are not random. When severity changes around sleep, stress, food, digestion, hormones, or flare days, that pattern matters.
-            </p>
-            <p class="text-sm md:text-base font-black mt-3">
-              This is where you start documenting clearly and advocating with confidence.
-            </p>
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <div class="border-2 border-black p-4">
-              <h3 class="font-black text-lg uppercase underline mb-2">Questions For Your Doctor</h3>
-              <ul id="followUpList" class="list-disc pl-5 space-y-1 font-medium"></ul>
-            </div>
-
-            <div class="border-2 border-black p-4">
-              <h3 class="font-black text-lg uppercase underline mb-2">Recent Entries</h3>
-              <div id="printEntries" class="space-y-2 text-sm"></div>
-            </div>
-          </div>
-
-          <p class="text-[11px] uppercase font-bold border-t-2 border-black pt-4">
-            Disclaimer: This summary is for organizational and educational purposes only. It is not medical advice, diagnosis, or treatment.
-          </p>
-        </div>
-
-        <div class="glass border-orange rounded-2xl p-6 no-print">
-          <h2 class="text-xl font-black uppercase italic text-orange mb-4">Recent Entries</h2>
-          <div id="entriesList" class="space-y-3">
-            <p class="text-gray-400">No entries yet. Add your first symptom log to begin.</p>
-          </div>
-        </div>
-
-        <div class="no-print">
-          <button onclick="handlePrint()" class="btn-action btn-pink">
-            Print This For My Doctor →
-          </button>
+        <div id="entriesList" class="space-y-3">
+          <p class="text-gray-400">No entries yet.</p>
         </div>
       </section>
     </div>
 
-    <footer style="margin-top: 60px; padding: 25px; text-align: center; font-size: 12px; border-top: 1px solid #00f0ff; background: rgba(0,0,0,0.8);">
-      <p style="color:#00f0ff;">
-        © 2026 Unhinged N Loud™. All rights reserved.
-      </p>
-
-      <p style="color:#aaa;">
-        All tools, systems, and frameworks are proprietary intellectual property.
-      </p>
-
-      <p style="margin-top:10px; color:#00f0ff;">
-        Be Loud. Bring Receipts.
-      </p>
-
-      <p style="color:#888; font-size:10px;">
-        Use of this platform is subject to proprietary rights and terms.
-      </p>
-
+    <footer>
+      <p style="color:#00f0ff;">© 2026 Unhinged N Loud™. All rights reserved.</p>
+      <p style="color:#aaa;">All tools, systems, and frameworks are proprietary intellectual property.</p>
+      <p style="margin-top:10px; color:#00f0ff;">Be Loud. Bring Receipts.</p>
+      <p style="color:#888; font-size:10px;">Use of this platform is subject to proprietary rights and terms.</p>
       <p style="margin-top:15px; font-size:11px;">
         <a href="terms.html" style="color:#00f0ff;">Terms</a> |
         <a href="privacy.html" style="color:#00f0ff;">Privacy</a> |
@@ -421,314 +238,86 @@
 
   <script>
     let entries = [];
-    let chart = null;
 
-    function saveEntries() {
-      localStorage.setItem('unl_symptom_tracker_entries', JSON.stringify(entries));
-    }
-
-    function loadSavedEntries() {
-      const saved = localStorage.getItem('unl_symptom_tracker_entries');
+    function loadEntries() {
+      const saved = localStorage.getItem('unl_symptom_log_entries');
       if (saved) {
         try {
           entries = JSON.parse(saved) || [];
-          renderAll();
-        } catch (error) {
-          console.error('Could not load saved entries:', error);
+        } catch (e) {
+          entries = [];
         }
       }
+      renderEntries();
     }
 
-    function addEntry() {
-      const entry = {
-        date: document.getElementById('entryDate').value,
-        symptom: document.getElementById('symptom').value.trim(),
-        severity: parseInt(document.getElementById('severity').value, 10),
-        flare: document.getElementById('flare').value,
-        food: document.getElementById('food').value.trim(),
-        stress: parseInt(document.getElementById('stress').value, 10),
-        sleep: parseFloat(document.getElementById('sleep').value),
-        meds: document.getElementById('meds').value.trim(),
-        digestion: document.getElementById('digestion').value.trim(),
-        cycle: document.getElementById('cycle').value.trim(),
-        notes: document.getElementById('notes').value.trim()
-      };
+    function saveToStorage() {
+      localStorage.setItem('unl_symptom_log_entries', JSON.stringify(entries));
+    }
 
-      if (!entry.date || !entry.symptom || isNaN(entry.severity)) {
-        alert('Date, primary symptom, and severity are required.');
+    function saveEntry() {
+      const date = document.getElementById('entryDate').value;
+      const symptom = document.getElementById('symptom').value.trim();
+      const severity = document.getElementById('severity').value;
+      const trigger = document.getElementById('trigger').value.trim();
+      const notes = document.getElementById('notes').value.trim();
+
+      if (!date || !symptom) {
+        alert('Please enter at least the date and symptom.');
         return;
       }
 
-      entries.push(entry);
-      entries.sort((a, b) => new Date(a.date) - new Date(b.date));
-      saveEntries();
-      renderAll();
+      entries.unshift({
+        date,
+        symptom,
+        severity,
+        trigger,
+        notes
+      });
+
+      saveToStorage();
+      renderEntries();
       clearForm();
+    }
+
+    function renderEntries() {
+      const container = document.getElementById('entriesList');
+
+      if (entries.length === 0) {
+        container.innerHTML = '<p class="text-gray-400">No entries yet.</p>';
+        return;
+      }
+
+      const recentEntries = entries.slice(0, 6);
+
+      container.innerHTML = recentEntries.map(entry => `
+        <div class="entry">
+          <div class="flex justify-between gap-3 mb-2">
+            <p class="font-black uppercase text-cyan">${escapeHtml(entry.symptom)}</p>
+            <p class="text-sm text-gray-400 font-bold">${escapeHtml(entry.date)}</p>
+          </div>
+          <p class="text-sm mb-1"><strong>Severity:</strong> ${entry.severity ? escapeHtml(entry.severity) + '/10' : 'Not logged'}</p>
+          <p class="text-sm mb-1"><strong>Possible Trigger:</strong> ${entry.trigger ? escapeHtml(entry.trigger) : 'Not logged'}</p>
+          <p class="text-sm"><strong>Notes:</strong> ${entry.notes ? escapeHtml(entry.notes) : 'Not logged'}</p>
+        </div>
+      `).join('');
     }
 
     function clearForm() {
       document.getElementById('entryDate').value = '';
       document.getElementById('symptom').value = '';
       document.getElementById('severity').value = '';
-      document.getElementById('flare').value = '';
-      document.getElementById('food').value = '';
-      document.getElementById('stress').value = '';
-      document.getElementById('sleep').value = '';
-      document.getElementById('meds').value = '';
-      document.getElementById('digestion').value = '';
-      document.getElementById('cycle').value = '';
+      document.getElementById('trigger').value = '';
       document.getElementById('notes').value = '';
     }
 
     function clearAllEntries() {
-      const confirmed = confirm('Are you sure you want to delete all saved entries?');
+      const confirmed = confirm('Are you sure you want to delete all entries?');
       if (!confirmed) return;
 
       entries = [];
-      saveEntries();
-      renderAll();
-    }
-
-    function loadDemoData() {
-      entries = [
-        {
-          date: '2026-04-10',
-          symptom: 'Fatigue',
-          severity: 6,
-          flare: 'No',
-          food: 'Eggs, toast, coffee',
-          stress: 5,
-          sleep: 7,
-          meds: 'Vitamin D, magnesium',
-          digestion: 'Mild bloating',
-          cycle: 'Luteal phase',
-          notes: 'Energy dipped around mid-afternoon'
-        },
-        {
-          date: '2026-04-12',
-          symptom: 'Joint Pain',
-          severity: 8,
-          flare: 'Yes',
-          food: 'Takeout, soda',
-          stress: 8,
-          sleep: 5.5,
-          meds: 'Ibuprofen',
-          digestion: 'Nausea',
-          cycle: 'PMS',
-          notes: 'Hands and knees worse than usual'
-        },
-        {
-          date: '2026-04-14',
-          symptom: 'Brain Fog',
-          severity: 7,
-          flare: 'Yes',
-          food: 'Protein shake, chicken, rice',
-          stress: 7,
-          sleep: 6,
-          meds: 'Electrolytes',
-          digestion: 'Loose stool',
-          cycle: 'Period starting',
-          notes: 'Could not focus well in the morning'
-        }
-      ];
-
-      saveEntries();
-      renderAll();
-    }
-
-    function renderAll() {
-      updateChart();
-      renderEntriesList();
-      generateSummary();
-      document.getElementById('summaryCard').classList.toggle('hidden', entries.length === 0);
-    }
-
-    function updateChart() {
-      const ctx = document.getElementById('trendChart').getContext('2d');
-
-      if (chart) {
-        chart.destroy();
-      }
-
-      const labels = entries.map(entry => entry.date);
-      const values = entries.map(entry => entry.severity);
-
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Symptom Severity',
-            data: values,
-            borderColor: '#39ff14',
-            backgroundColor: 'rgba(57,255,20,0.12)',
-            fill: true,
-            tension: 0.28,
-            pointRadius: 6,
-            pointHoverRadius: 8,
-            pointBackgroundColor: '#00f3ff',
-            pointBorderColor: '#00f3ff'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              labels: {
-                color: 'white',
-                font: { weight: 'bold' }
-              }
-            }
-          },
-          scales: {
-            y: {
-              min: 0,
-              max: 10,
-              ticks: { color: '#aaa', stepSize: 1 },
-              grid: { color: '#222' }
-            },
-            x: {
-              ticks: { color: '#aaa' },
-              grid: { color: '#222' }
-            }
-          }
-        }
-      });
-    }
-
-    function renderEntriesList() {
-      const container = document.getElementById('entriesList');
-
-      if (entries.length === 0) {
-        container.innerHTML = '<p class="text-gray-400">No entries yet. Add your first symptom log to begin.</p>';
-        return;
-      }
-
-      const latestFirst = [...entries].reverse();
-
-      container.innerHTML = latestFirst.map(entry => `
-        <div class="entry-chip">
-          <div class="flex flex-wrap justify-between gap-2 mb-2">
-            <p class="font-black uppercase text-cyan">${escapeHtml(entry.symptom)}</p>
-            <p class="text-sm text-gray-400 font-bold">${escapeHtml(entry.date)}</p>
-          </div>
-          <div class="text-sm text-gray-200 space-y-1">
-            <p><strong>Severity:</strong> ${formatValue(entry.severity, '/10')}</p>
-            <p><strong>Flare Day:</strong> ${formatValue(entry.flare)}</p>
-            <p><strong>Food:</strong> ${formatValue(entry.food)}</p>
-            <p><strong>Stress:</strong> ${formatValue(entry.stress, '/10')}</p>
-            <p><strong>Sleep:</strong> ${formatValue(entry.sleep, ' hrs')}</p>
-            <p><strong>Meds:</strong> ${formatValue(entry.meds)}</p>
-            <p><strong>Digestion:</strong> ${formatValue(entry.digestion)}</p>
-            <p><strong>Cycle:</strong> ${formatValue(entry.cycle)}</p>
-            <p><strong>Notes:</strong> ${formatValue(entry.notes)}</p>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function generateSummary() {
-      if (entries.length === 0) return;
-
-      const last = entries[entries.length - 1];
-      const prev = entries.length > 1 ? entries[entries.length - 2] : null;
-
-      let trendDirection = 'holding steady';
-      if (prev) {
-        if (last.severity > prev.severity) trendDirection = 'increasing';
-        if (last.severity < prev.severity) trendDirection = 'decreasing';
-      }
-
-      const highStressDays = entries.filter(entry => !isNaN(entry.stress) && entry.stress >= 7).length;
-      const lowSleepDays = entries.filter(entry => !isNaN(entry.sleep) && entry.sleep < 6).length;
-      const flareDays = entries.filter(entry => entry.flare === 'Yes').length;
-
-      const symptomCount = {};
-      entries.forEach(entry => {
-        const key = entry.symptom || 'Unknown';
-        symptomCount[key] = (symptomCount[key] || 0) + 1;
-      });
-
-      let mostCommonSymptom = '';
-      let highestCount = 0;
-      Object.keys(symptomCount).forEach(symptom => {
-        if (symptomCount[symptom] > highestCount) {
-          highestCount = symptomCount[symptom];
-          mostCommonSymptom = symptom;
-        }
-      });
-
-      const statusBox = document.getElementById('statusAlert');
-      if (last.severity >= 8) {
-        statusBox.innerText = `Alert: ${last.symptom} is severe today`;
-        statusBox.style.backgroundColor = '#ff00ff';
-        statusBox.style.color = 'black';
-      } else if (last.severity >= 5) {
-        statusBox.innerText = `Caution: ${last.symptom} is moderate and needs tracking`;
-        statusBox.style.backgroundColor = '#ffac1c';
-        statusBox.style.color = 'black';
-      } else {
-        statusBox.innerText = `Current status: symptoms are present but lower intensity`;
-        statusBox.style.backgroundColor = '#39ff14';
-        statusBox.style.color = 'black';
-      }
-
-      document.getElementById('trendAnalysis').innerText =
-        `Your most recent symptom entry shows ${last.symptom} at ${last.severity}/10, and your overall symptom trend is ${trendDirection}. ` +
-        `Across ${entries.length} tracked day(s), your most commonly logged symptom is ${mostCommonSymptom || 'not enough data yet'}.`;
-
-      const patterns = [];
-      patterns.push(`Flare days logged: ${flareDays}`);
-      if (highStressDays > 0) patterns.push(`Higher stress showed up on ${highStressDays} day(s)`);
-      if (lowSleepDays > 0) patterns.push(`Sleep under 6 hours showed up on ${lowSleepDays} day(s)`);
-      if (last.food) patterns.push(`Most recent food note: ${last.food}`);
-      if (last.digestion) patterns.push(`Most recent digestion note: ${last.digestion}`);
-      if (last.cycle) patterns.push(`Most recent cycle/hormone note: ${last.cycle}`);
-
-      document.getElementById('patternList').innerHTML = patterns
-        .map(item => `<li>${escapeHtml(item)}</li>`)
-        .join('');
-
-      document.getElementById('followUpList').innerHTML = `
-        <li>Could my symptom patterns be connected to inflammation, hormones, digestion, or autoimmune activity?</li>
-        <li>Are there specific triggers in my food, stress, sleep, or flare history that you want me to keep tracking?</li>
-        <li>Do these patterns suggest labs, imaging, referrals, or follow-up testing we should consider?</li>
-        <li>What would you want documented before my next appointment so we can compare changes clearly?</li>
-      `;
-
-      const latestForPrint = [...entries].reverse().slice(0, 5);
-      document.getElementById('printEntries').innerHTML = latestForPrint.map(entry => `
-        <div class="border-b border-black pb-2">
-          <p><strong>${escapeHtml(entry.date)}</strong> — ${escapeHtml(entry.symptom)} (${formatValue(entry.severity, '/10')})</p>
-          <p>Flare: ${formatValue(entry.flare)} | Stress: ${formatValue(entry.stress, '/10')} | Sleep: ${formatValue(entry.sleep, ' hrs')}</p>
-          <p>Food: ${formatValue(entry.food)}</p>
-        </div>
-      `).join('');
-    }
-
-    function handlePrint() {
-      if (entries.length === 0) {
-        alert('Add at least one entry before printing.');
-        return;
-      }
-
-      const email = prompt(
-        'Get your FULL Symptom Tracker + Doctor Prep flow 💜\n\nEnter your email to continue printing:'
-      );
-
-      if (email && email.includes('@')) {
-        console.log('Captured email:', email);
-        alert('Your report is being prepared. You can now print.');
-        window.print();
-      } else {
-        alert('Please enter a valid email to continue.');
-      }
-    }
-
-    function formatValue(value, suffix = '') {
-      if (value === undefined || value === null || value === '') return 'Not logged';
-      return `${value}${suffix}`;
+      saveToStorage();
+      renderEntries();
     }
 
     function escapeHtml(value) {
@@ -740,7 +329,7 @@
         .replaceAll("'", '&#039;');
     }
 
-    loadSavedEntries();
+    loadEntries();
   </script>
 </body>
 </html>
