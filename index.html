@@ -274,7 +274,7 @@
 
       <section class="card-pink p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="pink text-2xl font-black uppercase italic">Last 3 Entries</h2>
+          <h2 class="pink text-2xl font-black uppercase italic">Last 6 Entries</h2>
           <span class="text-xs uppercase tracking-widest text-gray-400">Simple view</span>
         </div>
 
@@ -297,7 +297,6 @@
     </footer>
   </div>
 
-  <!-- Email / Print Modal -->
   <div id="printModal" class="modal-backdrop no-print">
     <div class="modal-box">
       <p class="pink font-extrabold uppercase tracking-[0.2em] text-sm mb-3">
@@ -325,7 +324,6 @@
     </div>
   </div>
 
-  <!-- Printable Report -->
   <div class="print-report">
     <div class="print-page max-w-4xl mx-auto">
       <div class="print-card">
@@ -402,7 +400,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'unl_simple_symptom_log_v3';
+    const STORAGE_KEY = 'unl_simple_symptom_log_v4';
     let entries = [];
     let capturedEmail = '';
 
@@ -447,7 +445,7 @@
         return;
       }
 
-      list.innerHTML = entries.slice(0, 3).map(entry => `
+      list.innerHTML = entries.slice(0, 6).map(entry => `
         <div class="entry">
           <div class="flex justify-between mb-2 gap-3">
             <strong>${escapeHtml(entry.symptom)}</strong>
@@ -510,9 +508,9 @@
       document.getElementById('printEmailValue').textContent = capturedEmail || 'Skipped';
       document.getElementById('printTotalEntries').textContent = entries.length;
 
-      const latestFive = entries.slice(0, 5);
+      const latestSix = entries.slice(0, 6);
 
-      const severities = latestFive
+      const severities = latestSix
         .map(entry => Number(entry.severity))
         .filter(value => !Number.isNaN(value));
 
@@ -520,29 +518,29 @@
         ? (severities.reduce((a, b) => a + b, 0) / severities.length).toFixed(1)
         : 'Not enough data';
 
-      const commonTriggers = latestFive
+      const commonTriggers = latestSix
         .map(entry => entry.trigger)
         .filter(Boolean);
 
-      const mostRecentSymptom = latestFive[0]?.symptom || 'Not enough data';
-      const mostRecentTrigger = latestFive[0]?.trigger || 'Not logged';
+      const mostRecentSymptom = latestSix[0]?.symptom || 'Not enough data';
+      const mostRecentTrigger = latestSix[0]?.trigger || 'Not logged';
 
       const patternItems = [
         `Most recent symptom: ${mostRecentSymptom}`,
         `Average recent severity: ${avgSeverity}${avgSeverity !== 'Not enough data' ? '/10' : ''}`,
         `Most recent possible trigger: ${mostRecentTrigger}`,
-        `Entries included in this printout: ${latestFive.length}`
+        `Entries included in this printout: ${latestSix.length}`
       ];
 
       if (commonTriggers.length > 1) {
-        patternItems.push(`Repeated trigger notes may be worth reviewing across entries`);
+        patternItems.push('Repeated trigger notes may be worth reviewing across entries');
       }
 
       document.getElementById('printPatternList').innerHTML = patternItems
         .map(item => `<li>${escapeHtml(item)}</li>`)
         .join('');
 
-      document.getElementById('printEntries').innerHTML = latestFive.map(entry => `
+      document.getElementById('printEntries').innerHTML = latestSix.map(entry => `
         <div style="border-bottom:1px solid black; padding:10px 0;">
           <p style="margin:0 0 4px 0; font-size:14px;">
             <strong>${escapeHtml(entry.date)}</strong> — <strong>${escapeHtml(entry.symptom)}</strong>
