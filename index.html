@@ -1,324 +1,746 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KXEMZE9LPJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Optional Google Analytics: paste your GA tag below if you want it -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  -->
 
-  gtag('config', 'G-KXEMZE9LPJ');
-</script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE LAB | Lab Trend Visualizer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap" rel="stylesheet">
-    <style>
-        :root { 
-            --neon-green: #39FF14; 
-            --neon-cyan: #00F3FF;
-            --neon-pink: #FF00FF;
-            --neon-orange: #FFAC1C;
-            --dark-bg: #000000; 
-        }
-        body { background-color: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; }
-        
-        /* Neon Borders */
-        .border-cyan { border: 2px solid var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
-        .border-green { border: 2px solid var(--neon-green); box-shadow: 0 0 10px rgba(57, 255, 20, 0.3); }
-        .border-pink { border: 2px solid var(--neon-pink); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3); }
-        
-        /* Neon Text */
-        .text-cyan { color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan); }
-        .text-pink { color: var(--neon-pink); text-shadow: 0 0 5px var(--neon-pink); }
-        .text-orange { color: var(--neon-orange); text-shadow: 0 0 5px var(--neon-orange); }
-        
-        .btn-action { 
-            border: 2px solid white; transition: 0.3s; text-transform: uppercase; font-weight: 900;
-        }
-        .btn-cyan:hover { background: var(--neon-cyan); border-color: var(--neon-cyan); color: black; }
-        
-        input { background: #111; border: 1px solid #333; color: white; padding: 10px; border-radius: 4px; width: 100%; }
-        input:focus { border-color: var(--neon-cyan); outline: none; }
-        
-        @media print { .no-print { display: none; } body { background: white; color: black; } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UNL™ Symptom & Flare Tracker</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --neon-green: #39ff14;
+      --neon-cyan: #00f3ff;
+      --neon-pink: #ff00ff;
+      --neon-orange: #ffac1c;
+      --dark-bg: #050505;
+      --card-bg: #0d0d0d;
+      --muted: #aaaaaa;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(0,243,255,0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(255,0,255,0.08), transparent 25%),
+        linear-gradient(180deg, #000000 0%, #060606 100%);
+      color: white;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .glass {
+      background: rgba(10,10,10,0.88);
+      backdrop-filter: blur(8px);
+    }
+
+    .border-cyan {
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0,243,255,0.30);
+    }
+
+    .border-green {
+      border: 2px solid var(--neon-green);
+      box-shadow: 0 0 12px rgba(57,255,20,0.25);
+    }
+
+    .border-pink {
+      border: 2px solid var(--neon-pink);
+      box-shadow: 0 0 12px rgba(255,0,255,0.25);
+    }
+
+    .border-orange {
+      border: 2px solid var(--neon-orange);
+      box-shadow: 0 0 12px rgba(255,172,28,0.25);
+    }
+
+    .text-cyan {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 8px rgba(0,243,255,0.5);
+    }
+
+    .text-green {
+      color: var(--neon-green);
+      text-shadow: 0 0 8px rgba(57,255,20,0.45);
+    }
+
+    .text-pink {
+      color: var(--neon-pink);
+      text-shadow: 0 0 8px rgba(255,0,255,0.45);
+    }
+
+    .text-orange {
+      color: var(--neon-orange);
+      text-shadow: 0 0 8px rgba(255,172,28,0.45);
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 12px 16px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-radius: 12px;
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn-cyan {
+      background: transparent;
+      color: white;
+      border: 2px solid var(--neon-cyan);
+    }
+
+    .btn-cyan:hover {
+      background: var(--neon-cyan);
+      color: black;
+      box-shadow: 0 0 18px rgba(0,243,255,0.55);
+    }
+
+    .btn-pink {
+      background: transparent;
+      color: white;
+      border: 2px solid var(--neon-pink);
+    }
+
+    .btn-pink:hover {
+      background: var(--neon-pink);
+      color: black;
+      box-shadow: 0 0 18px rgba(255,0,255,0.55);
+    }
+
+    .btn-green {
+      background: transparent;
+      color: white;
+      border: 2px solid var(--neon-green);
+    }
+
+    .btn-green:hover {
+      background: var(--neon-green);
+      color: black;
+      box-shadow: 0 0 18px rgba(57,255,20,0.55);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      background: #111;
+      border: 1px solid #333;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 0 2px rgba(0,243,255,0.15);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #b3b3b3;
+    }
+
+    .entry-chip {
+      border: 1px solid #2a2a2a;
+      border-left: 4px solid var(--neon-cyan);
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .hidden-print {
+      display: block;
+    }
+
+    .print-only {
+      display: none;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .print-only {
+        display: block !important;
+      }
+
+      .print-card {
+        border: 2px solid black !important;
+        box-shadow: none !important;
+        background: white !important;
+        color: black !important;
+      }
+
+      canvas {
+        max-height: 280px !important;
+      }
+
+      a {
+        color: black !important;
+        text-decoration: none !important;
+      }
+    }
+  </style>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WCZGVDZH0J"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-WCZGVDZH0J');
-</script>
-<body class="p-4 md:p-10">
-
+<body class="p-4 md:p-8">
+  <div class="max-w-7xl mx-auto">
     <nav class="mb-6 no-print">
-        <a href="index.html" class="text-cyan font-bold tracking-tighter">← RETURN TO HUB</a>
+      <a href="https://unhingednloud.github.io/unhinged-advocacy-toolkit/" class="text-cyan font-extrabold tracking-widest uppercase">
+        ← Return to Advocacy Toolkit
+      </a>
     </nav>
 
     <header class="mb-10">
-        <h1 class="text-5xl md:text-7xl font-black text-cyan mb-2 italic uppercase">Lab Trend Visualizer™</h1>
-        <p class="text-white text-lg md:text-2xl font-bold mt-4 max-w-3xl">
-  Your labs aren’t random. This tool helps you SEE the pattern your doctor might be missing.
-</p>
+      <p class="text-pink font-extrabold uppercase tracking-[0.25em] text-sm md:text-base mb-3">
+        Unhinged N Loud™ Advocacy Series
+      </p>
 
-<p class="text-gray-400 mt-2 max-w-2xl">
-  Track your results over time, spot trends, and walk into appointments with something clear to show.
-</p>
-      
-      <p class="text-gray-400 font-bold uppercase tracking-widest text-sm">Organize your receipts. Spot the patterns. Be Unhinged N Loud™.</p>
+      <h1 class="text-cyan text-4xl md:text-6xl font-black italic uppercase leading-none mb-4">
+        UNL™ Symptom & Flare Tracker
+      </h1>
+
+      <p class="text-white text-lg md:text-2xl font-bold max-w-4xl">
+        Your symptoms are not random. Track patterns in flares, food, stress, sleep, digestion, and daily symptoms so you can start connecting the dots.
+      </p>
+
+      <p class="text-gray-400 mt-4 max-w-3xl">
+        This tracker is built to help you organize your day-to-day patterns and walk into appointments with something clear, documented, and real.
+      </p>
     </header>
 
     <div class="grid lg:grid-cols-3 gap-8">
-        <section class="lg:col-span-1 no-print">
-            <div class="border-cyan p-6 rounded-lg bg-black">
-                <h2 class="text-xl font-black mb-4 uppercase italic">Add Lab Entry</h2>
-                <p class="text-sm text-gray-400 mb-4"> 👉 Start by entering your most recent lab result below
-   </p>
-              <div class="space-y-4">
-                    <div><label class="text-xs uppercase font-bold text-gray-500">Date</label><input type="date" id="labDate"></div>
-                    <div><label class="text-xs uppercase font-bold text-gray-500">Lab Name (e.g. CRP, TSH)</label><input type="text" id="labName" placeholder="CRP"></div>
-                    <div><label class="text-xs uppercase font-bold text-gray-500">Your Result</label><input type="number" id="labResult" step="any" placeholder="12.5"></div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label class="text-xs uppercase font-bold text-gray-500">Ref Low</label><input type="number" id="refLow" step="any"></div>
-                        <div><label class="text-xs uppercase font-bold text-gray-500">Ref High</label><input type="number" id="refHigh" step="any"></div>
-                    </div>
-                    <button onclick="addEntry()" class="w-full py-4 btn-action btn-cyan text-cyan">Generate My Trend →</button>
-                    <button onclick="loadDemoData()" class="w-full text-xs text-gray-500 hover:text-white uppercase mt-2">Load Demo Data</button>
-                </div>
-            </div>
-        </section>
+      <!-- Form -->
+      <section class="lg:col-span-1 no-print">
+        <div class="glass border-cyan rounded-2xl p-6">
+          <h2 class="text-xl font-black uppercase italic text-cyan mb-2">Track Your Day</h2>
+          <p class="text-sm text-gray-400 mb-6">
+            Log one entry at a time. The chart and printable summary will update automatically.
+          </p>
 
-        <section class="lg:col-span-2 space-y-8">
-            <div class="border-green p-6 rounded-lg bg-black min-h-[300px]">
-                <h2 class="text-xl font-black mb-4 text-green-400 italic">TREND LINE</h2>
-                <canvas id="trendChart"></canvas>
+          <div class="space-y-4">
+            <div>
+              <label class="label" for="entryDate">Date</label>
+              <input type="date" id="entryDate" />
             </div>
 
-            <div id="summaryCard" class="hidden bg-white text-black p-8 rounded-none border-l-[12px] border-black">
-          
-      
-              <div class="flex justify-between items-start border-b-8 border-black pb-4 mb-6">
-                    <h2 class="text-4xl font-black uppercase leading-none">The Receipts</h2>
-                    <p class="text-xs font-bold uppercase text-right">Unhinged N Loud™<br>Advocacy Toolkit</p>
-                </div>
-
-                <div class="space-y-6">
-                    <div id="statusAlert" class="p-4 bg-black text-white font-black text-xl italic uppercase"></div>
-                    
-                    <div>
-                        <h3 class="font-black text-lg underline">TREND ANALYSIS:</h3>
-                        <p id="trendAnalysis" class="text-xl"></p>
-                    </div>
-
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="p-4 border-2 border-black">
-                            <h3 class="font-black text-pink-600 uppercase">Out of Range Warnings</h3>
-                            <ul id="warningsList" class="list-disc pl-5 font-bold"></ul>
-                        </div>
-                        
-
-<div class="mt-6 p-4 border-2 border-pink-500 bg-black text-white shadow-lg">
-  <h3 class="font-black uppercase text-lg text-pink-500">
-  WHAT THIS MEANS FOR YOU:
-</h3>
-
-<p class="mt-2 text-sm">
-  If your labs are trending like this AND your symptoms are increasing…
-  this is not random.
-</p>
-
-<p class="mt-2 text-sm font-bold text-cyan-400">
-  This is where you advocate.
-</p>
-
-<p class="mt-2 text-sm">
-  Bring this data to your doctor and ask:
-</p>
-
-<ul class="list-disc pl-5 mt-2 text-sm">
-  <li>“What is causing this pattern?”</li>
-  <li>“Why is this trend being ignored?”</li>
- <li>"What’s the next step if this continues?"</li>
-</ul>
- <div class="mt-4">
-  <button onclick="handlePrint()" class="w-full py-3 bg-pink-500 text-black font-black uppercase">
-  PRINT THIS FOR MY DOCTOR →
-</button>
-</div>
-
-  <div class="p-4 border-2 border-black bg-yellow-50">
-  
-                            <h3 class="font-black text-orange-600 uppercase">Questions for Follow-up</h3>
-                            <ul id="followUpList"></ul>
-</div>
-                    </div>
-
-                    <p class="text-[10px] mt-10 uppercase font-bold border-t border-gray-300 pt-2">
-                        Disclaimer: This summary was generated for organizational purposes. It is not medical advice. Consult your physician.
-                    </p>
-                </div>
-                
-            
-                   
+            <div>
+              <label class="label" for="symptom">Primary Symptom</label>
+              <input type="text" id="symptom" placeholder="fatigue, joint pain, brain fog..." />
             </div>
-        </section>
+
+            <div>
+              <label class="label" for="severity">Symptom Severity (1–10)</label>
+              <input type="number" id="severity" min="1" max="10" placeholder="1 to 10" />
+            </div>
+
+            <div>
+              <label class="label" for="flare">Flare Day?</label>
+              <select id="flare">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="label" for="food">Food / Meals</label>
+              <input type="text" id="food" placeholder="what you ate today" />
+            </div>
+
+            <div>
+              <label class="label" for="stress">Stress Level (1–10)</label>
+              <input type="number" id="stress" min="1" max="10" placeholder="1 to 10" />
+            </div>
+
+            <div>
+              <label class="label" for="sleep">Sleep (hours)</label>
+              <input type="number" id="sleep" min="0" max="24" step="0.5" placeholder="example: 6.5" />
+            </div>
+
+            <div>
+              <label class="label" for="meds">Medications / Supplements</label>
+              <input type="text" id="meds" placeholder="list what you took" />
+            </div>
+
+            <div>
+              <label class="label" for="digestion">Digestion / Bowel Notes</label>
+              <input type="text" id="digestion" placeholder="bloating, nausea, constipation..." />
+            </div>
+
+            <div>
+              <label class="label" for="cycle">Cycle / Hormone Notes</label>
+              <input type="text" id="cycle" placeholder="ovulation, PMS, period, hormone shift..." />
+            </div>
+
+            <div>
+              <label class="label" for="notes">Notes</label>
+              <textarea id="notes" placeholder="anything else you want to remember about today"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 pt-2">
+              <button onclick="addEntry()" class="btn-action btn-cyan">Add Entry</button>
+              <button onclick="loadDemoData()" class="btn-action btn-green">Load Demo Data</button>
+              <button onclick="clearAllEntries()" class="btn-action btn-pink">Clear All Entries</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main -->
+      <section class="lg:col-span-2 space-y-8">
+        <div class="glass border-green rounded-2xl p-6 min-h-[320px]">
+          <h2 class="text-xl font-black uppercase italic text-green mb-4">Trend Line</h2>
+          <canvas id="trendChart"></canvas>
+        </div>
+
+        <div id="summaryCard" class="hidden print-card bg-white text-black rounded-2xl p-6 md:p-8 border-4 border-black">
+          <div class="flex justify-between items-start gap-4 border-b-4 border-black pb-4 mb-6">
+            <div>
+              <h2 class="text-3xl md:text-4xl font-black uppercase leading-none">Symptom Summary</h2>
+              <p class="font-bold uppercase text-sm mt-2">Unhinged N Loud™ Tracker Report</p>
+            </div>
+            <div class="text-right text-xs font-bold uppercase">
+              UNL™<br>Pattern Tracker
+            </div>
+          </div>
+
+          <div id="statusAlert" class="p-4 text-white font-black text-lg uppercase mb-6">
+            Status
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="border-2 border-black p-4">
+              <h3 class="font-black text-lg uppercase underline mb-2">Trend Analysis</h3>
+              <p id="trendAnalysis" class="text-base leading-relaxed"></p>
+            </div>
+
+            <div class="border-2 border-black p-4">
+              <h3 class="font-black text-lg uppercase underline mb-2">Possible Patterns</h3>
+              <ul id="patternList" class="list-disc pl-5 space-y-1 font-medium"></ul>
+            </div>
+          </div>
+
+          <div class="border-2 border-black p-4 mb-6">
+            <h3 class="font-black text-lg uppercase underline mb-2">What This Means For You</h3>
+            <p class="text-sm md:text-base">
+              Your symptoms are not random. When severity changes around sleep, stress, food, digestion, hormones, or flare days, that pattern matters.
+            </p>
+            <p class="text-sm md:text-base font-black mt-3">
+              This is where you start documenting clearly and advocating with confidence.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="border-2 border-black p-4">
+              <h3 class="font-black text-lg uppercase underline mb-2">Questions For Your Doctor</h3>
+              <ul id="followUpList" class="list-disc pl-5 space-y-1 font-medium"></ul>
+            </div>
+
+            <div class="border-2 border-black p-4">
+              <h3 class="font-black text-lg uppercase underline mb-2">Recent Entries</h3>
+              <div id="printEntries" class="space-y-2 text-sm"></div>
+            </div>
+          </div>
+
+          <p class="text-[11px] uppercase font-bold border-t-2 border-black pt-4">
+            Disclaimer: This summary is for organizational and educational purposes only. It is not medical advice, diagnosis, or treatment.
+          </p>
+        </div>
+
+        <div class="glass border-orange rounded-2xl p-6 no-print">
+          <h2 class="text-xl font-black uppercase italic text-orange mb-4">Recent Entries</h2>
+          <div id="entriesList" class="space-y-3">
+            <p class="text-gray-400">No entries yet. Add your first symptom log to begin.</p>
+          </div>
+        </div>
+
+        <div class="no-print">
+          <button onclick="handlePrint()" class="btn-action btn-pink">
+            Print This For My Doctor →
+          </button>
+        </div>
+      </section>
     </div>
 
-    <script>
-        let labEntries = [];
-        let chart = null;
+    <footer style="margin-top: 60px; padding: 25px; text-align: center; font-size: 12px; border-top: 1px solid #00f0ff; background: rgba(0,0,0,0.8);">
+      <p style="color:#00f0ff;">
+        © 2026 Unhinged N Loud™. All rights reserved.
+      </p>
 
-        function addEntry() {
-            const entry = {
-                date: document.getElementById('labDate').value,
-                name: document.getElementById('labName').value.toUpperCase(),
-                val: parseFloat(document.getElementById('labResult').value),
-                low: parseFloat(document.getElementById('refLow').value),
-                high: parseFloat(document.getElementById('refHigh').value)
-            };
-
-            if(!entry.date || isNaN(entry.val)) return alert("Date and Result are required.");
-
-            labEntries.push(entry);
-            labEntries.sort((a,b) => new Date(a.date) - new Date(b.date));
-            renderAll();
-        }
-
-        function loadDemoData() {
-            labEntries = [
-                {date: '2025-10-01', name: 'CRP', val: 5.2, low: 0, high: 3.0},
-                {date: '2025-11-15', name: 'CRP', val: 8.4, low: 0, high: 3.0},
-                {date: '2026-01-20', name: 'CRP', val: 12.1, low: 0, high: 3.0}
-            ];
-            renderAll();
-        }
-
-        function renderAll() {
-            updateChart();
-            generateAdvocacySheet();
-            document.getElementById('summaryCard').classList.remove('hidden');
-        }
-
-        function updateChart() {
-            const ctx = document.getElementById('trendChart').getContext('2d');
-            if(chart) chart.destroy();
-            
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labEntries.map(e => e.date),
-                    datasets: [{
-                        label: labEntries[0].name,
-                        data: labEntries.map(e => e.val),
-                        borderColor: '#39FF14',
-                        backgroundColor: 'rgba(57, 255, 20, 0.1)',
-                        fill: true,
-                        pointRadius: 8,
-                        pointBackgroundColor: '#00F3FF'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { ticks: { color: '#aaa' }, grid: { color: '#222' } },
-                        x: { ticks: { color: '#aaa' }, grid: { color: '#222' } }
-                    },
-                    plugins: { legend: { labels: { color: 'white', font: { weight: 'bold' } } } }
-                }
-            });
-        }
-
-        function generateAdvocacySheet() {
-            const last = labEntries[labEntries.length - 1];
-            const name = last.name;
-            const statusBox = document.getElementById('statusAlert');
-            const analysis = document.getElementById('trendAnalysis');
-            
-            // Logic for status
-            if (last.val > last.high) {
-                statusBox.innerText = `ALERT: ${name} IS ELEVATED`;
-                statusBox.style.backgroundColor = "var(--neon-pink)";
-            } else if (last.val < last.low) {
-                statusBox.innerText = `ALERT: ${name} IS BELOW RANGE`;
-                statusBox.style.backgroundColor = "var(--neon-cyan)";
-                statusBox.style.color = "black";
-            } else {
-                statusBox.innerText = `${name} IS WITHIN REFERENCE RANGE`;
-                statusBox.style.backgroundColor = "var(--neon-green)";
-                statusBox.style.color = "black";
-            }
-
-            // Directional Logic
-            let direction = "";
-            if (labEntries.length > 1) {
-                const prev = labEntries[labEntries.length - 2].val;
-                direction = last.val > prev ? "trending UPWARD" : "trending DOWNWARD";
-            }
-
-            analysis.innerText = `The most recent ${name} result is ${last.val}. Over ${labEntries.length} entries, the values are ${direction}. This indicates a persistent pattern that requires clinical review.`;
-
-            // Questions
-            document.getElementById('followUpList').innerHTML = `
-                <li>"How does this ${direction} trend correlate with my reported flares?"</li>
-                <li>"Is this ${name} result a primary indicator or secondary to another process?"</li>
-                <li>"At what threshold do we consider changing the current treatment plan?"</li>
-            `;
-            
-            document.getElementById('warningsList').innerHTML = last.val > last.high ? 
-                `<li>Result ${last.val} exceeds high reference of ${last.high}</li>` : `<li>No critical out-of-range flags for current entry.</li>`;
-        }
-   function handlePrint() {
-  const email = prompt(
-    "Get your FULL Autoimmune Report + Symptom Tracker + Doctor Guide 📊\n\nEnter your email to download:"
-  );
-
-  if (email && email.includes("@")) {
-    console.log("Captured email:", email);
-
-    alert("Your report is being prepared! You can now print.");
-
-    window.print();
-  } else {
-    alert("Please enter a valid email to continue.");
-  }
-}
-    </script>
- <footer style="
-  margin-top: 60px;
-  padding: 25px;
-  text-align: center;
-  font-size: 12px;
-  border-top: 1px solid #00f0ff;
-  background: rgba(0,0,0,0.8);
-">
-    <p style="color:#00f0ff;">
-  © 2026 Unhinged N Loud™. All rights reserved.
-</p>
-
-    <p style="color:#aaa;">
+      <p style="color:#aaa;">
         All tools, systems, and frameworks are proprietary intellectual property.
-    </p>
+      </p>
 
-    <p style="margin-top:10px; color:#00f0ff;">
-  Be Loud. Bring Receipts.
-</p>
+      <p style="margin-top:10px; color:#00f0ff;">
+        Be Loud. Bring Receipts.
+      </p>
 
-<p style="color:#888; font-size:10px;">
-  Use of this platform is subject to proprietary rights and terms.
-</p>
+      <p style="color:#888; font-size:10px;">
+        Use of this platform is subject to proprietary rights and terms.
+      </p>
 
-<p style="margin-top:15px; font-size:11px;">
-  <a href="terms.html" style="color:#00f0ff;">Terms</a> |
-  <a href="privacy.html" style="color:#00f0ff;">Privacy</a> |
-  <a href="disclaimer.html" style="color:#00f0ff;">Medical Disclaimer</a>
-</p>
-</footer>
+      <p style="margin-top:15px; font-size:11px;">
+        <a href="terms.html" style="color:#00f0ff;">Terms</a> |
+        <a href="privacy.html" style="color:#00f0ff;">Privacy</a> |
+        <a href="disclaimer.html" style="color:#00f0ff;">Medical Disclaimer</a>
+      </p>
+    </footer>
+  </div>
 
+  <script>
+    let entries = [];
+    let chart = null;
+
+    function saveEntries() {
+      localStorage.setItem('unl_symptom_tracker_entries', JSON.stringify(entries));
+    }
+
+    function loadSavedEntries() {
+      const saved = localStorage.getItem('unl_symptom_tracker_entries');
+      if (saved) {
+        try {
+          entries = JSON.parse(saved) || [];
+          renderAll();
+        } catch (error) {
+          console.error('Could not load saved entries:', error);
+        }
+      }
+    }
+
+    function addEntry() {
+      const entry = {
+        date: document.getElementById('entryDate').value,
+        symptom: document.getElementById('symptom').value.trim(),
+        severity: parseInt(document.getElementById('severity').value, 10),
+        flare: document.getElementById('flare').value,
+        food: document.getElementById('food').value.trim(),
+        stress: parseInt(document.getElementById('stress').value, 10),
+        sleep: parseFloat(document.getElementById('sleep').value),
+        meds: document.getElementById('meds').value.trim(),
+        digestion: document.getElementById('digestion').value.trim(),
+        cycle: document.getElementById('cycle').value.trim(),
+        notes: document.getElementById('notes').value.trim()
+      };
+
+      if (!entry.date || !entry.symptom || isNaN(entry.severity)) {
+        alert('Date, primary symptom, and severity are required.');
+        return;
+      }
+
+      entries.push(entry);
+      entries.sort((a, b) => new Date(a.date) - new Date(b.date));
+      saveEntries();
+      renderAll();
+      clearForm();
+    }
+
+    function clearForm() {
+      document.getElementById('entryDate').value = '';
+      document.getElementById('symptom').value = '';
+      document.getElementById('severity').value = '';
+      document.getElementById('flare').value = '';
+      document.getElementById('food').value = '';
+      document.getElementById('stress').value = '';
+      document.getElementById('sleep').value = '';
+      document.getElementById('meds').value = '';
+      document.getElementById('digestion').value = '';
+      document.getElementById('cycle').value = '';
+      document.getElementById('notes').value = '';
+    }
+
+    function clearAllEntries() {
+      const confirmed = confirm('Are you sure you want to delete all saved entries?');
+      if (!confirmed) return;
+
+      entries = [];
+      saveEntries();
+      renderAll();
+    }
+
+    function loadDemoData() {
+      entries = [
+        {
+          date: '2026-04-10',
+          symptom: 'Fatigue',
+          severity: 6,
+          flare: 'No',
+          food: 'Eggs, toast, coffee',
+          stress: 5,
+          sleep: 7,
+          meds: 'Vitamin D, magnesium',
+          digestion: 'Mild bloating',
+          cycle: 'Luteal phase',
+          notes: 'Energy dipped around mid-afternoon'
+        },
+        {
+          date: '2026-04-12',
+          symptom: 'Joint Pain',
+          severity: 8,
+          flare: 'Yes',
+          food: 'Takeout, soda',
+          stress: 8,
+          sleep: 5.5,
+          meds: 'Ibuprofen',
+          digestion: 'Nausea',
+          cycle: 'PMS',
+          notes: 'Hands and knees worse than usual'
+        },
+        {
+          date: '2026-04-14',
+          symptom: 'Brain Fog',
+          severity: 7,
+          flare: 'Yes',
+          food: 'Protein shake, chicken, rice',
+          stress: 7,
+          sleep: 6,
+          meds: 'Electrolytes',
+          digestion: 'Loose stool',
+          cycle: 'Period starting',
+          notes: 'Could not focus well in the morning'
+        }
+      ];
+
+      saveEntries();
+      renderAll();
+    }
+
+    function renderAll() {
+      updateChart();
+      renderEntriesList();
+      generateSummary();
+      document.getElementById('summaryCard').classList.toggle('hidden', entries.length === 0);
+    }
+
+    function updateChart() {
+      const ctx = document.getElementById('trendChart').getContext('2d');
+
+      if (chart) {
+        chart.destroy();
+      }
+
+      const labels = entries.map(entry => entry.date);
+      const values = entries.map(entry => entry.severity);
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Symptom Severity',
+            data: values,
+            borderColor: '#39ff14',
+            backgroundColor: 'rgba(57,255,20,0.12)',
+            fill: true,
+            tension: 0.28,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#00f3ff',
+            pointBorderColor: '#00f3ff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: 'white',
+                font: { weight: 'bold' }
+              }
+            }
+          },
+          scales: {
+            y: {
+              min: 0,
+              max: 10,
+              ticks: { color: '#aaa', stepSize: 1 },
+              grid: { color: '#222' }
+            },
+            x: {
+              ticks: { color: '#aaa' },
+              grid: { color: '#222' }
+            }
+          }
+        }
+      });
+    }
+
+    function renderEntriesList() {
+      const container = document.getElementById('entriesList');
+
+      if (entries.length === 0) {
+        container.innerHTML = '<p class="text-gray-400">No entries yet. Add your first symptom log to begin.</p>';
+        return;
+      }
+
+      const latestFirst = [...entries].reverse();
+
+      container.innerHTML = latestFirst.map(entry => `
+        <div class="entry-chip">
+          <div class="flex flex-wrap justify-between gap-2 mb-2">
+            <p class="font-black uppercase text-cyan">${escapeHtml(entry.symptom)}</p>
+            <p class="text-sm text-gray-400 font-bold">${escapeHtml(entry.date)}</p>
+          </div>
+          <div class="text-sm text-gray-200 space-y-1">
+            <p><strong>Severity:</strong> ${formatValue(entry.severity, '/10')}</p>
+            <p><strong>Flare Day:</strong> ${formatValue(entry.flare)}</p>
+            <p><strong>Food:</strong> ${formatValue(entry.food)}</p>
+            <p><strong>Stress:</strong> ${formatValue(entry.stress, '/10')}</p>
+            <p><strong>Sleep:</strong> ${formatValue(entry.sleep, ' hrs')}</p>
+            <p><strong>Meds:</strong> ${formatValue(entry.meds)}</p>
+            <p><strong>Digestion:</strong> ${formatValue(entry.digestion)}</p>
+            <p><strong>Cycle:</strong> ${formatValue(entry.cycle)}</p>
+            <p><strong>Notes:</strong> ${formatValue(entry.notes)}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function generateSummary() {
+      if (entries.length === 0) return;
+
+      const last = entries[entries.length - 1];
+      const prev = entries.length > 1 ? entries[entries.length - 2] : null;
+
+      let trendDirection = 'holding steady';
+      if (prev) {
+        if (last.severity > prev.severity) trendDirection = 'increasing';
+        if (last.severity < prev.severity) trendDirection = 'decreasing';
+      }
+
+      const highStressDays = entries.filter(entry => !isNaN(entry.stress) && entry.stress >= 7).length;
+      const lowSleepDays = entries.filter(entry => !isNaN(entry.sleep) && entry.sleep < 6).length;
+      const flareDays = entries.filter(entry => entry.flare === 'Yes').length;
+
+      const symptomCount = {};
+      entries.forEach(entry => {
+        const key = entry.symptom || 'Unknown';
+        symptomCount[key] = (symptomCount[key] || 0) + 1;
+      });
+
+      let mostCommonSymptom = '';
+      let highestCount = 0;
+      Object.keys(symptomCount).forEach(symptom => {
+        if (symptomCount[symptom] > highestCount) {
+          highestCount = symptomCount[symptom];
+          mostCommonSymptom = symptom;
+        }
+      });
+
+      const statusBox = document.getElementById('statusAlert');
+      if (last.severity >= 8) {
+        statusBox.innerText = `Alert: ${last.symptom} is severe today`;
+        statusBox.style.backgroundColor = '#ff00ff';
+        statusBox.style.color = 'black';
+      } else if (last.severity >= 5) {
+        statusBox.innerText = `Caution: ${last.symptom} is moderate and needs tracking`;
+        statusBox.style.backgroundColor = '#ffac1c';
+        statusBox.style.color = 'black';
+      } else {
+        statusBox.innerText = `Current status: symptoms are present but lower intensity`;
+        statusBox.style.backgroundColor = '#39ff14';
+        statusBox.style.color = 'black';
+      }
+
+      document.getElementById('trendAnalysis').innerText =
+        `Your most recent symptom entry shows ${last.symptom} at ${last.severity}/10, and your overall symptom trend is ${trendDirection}. ` +
+        `Across ${entries.length} tracked day(s), your most commonly logged symptom is ${mostCommonSymptom || 'not enough data yet'}.`;
+
+      const patterns = [];
+      patterns.push(`Flare days logged: ${flareDays}`);
+      if (highStressDays > 0) patterns.push(`Higher stress showed up on ${highStressDays} day(s)`);
+      if (lowSleepDays > 0) patterns.push(`Sleep under 6 hours showed up on ${lowSleepDays} day(s)`);
+      if (last.food) patterns.push(`Most recent food note: ${last.food}`);
+      if (last.digestion) patterns.push(`Most recent digestion note: ${last.digestion}`);
+      if (last.cycle) patterns.push(`Most recent cycle/hormone note: ${last.cycle}`);
+
+      document.getElementById('patternList').innerHTML = patterns
+        .map(item => `<li>${escapeHtml(item)}</li>`)
+        .join('');
+
+      document.getElementById('followUpList').innerHTML = `
+        <li>Could my symptom patterns be connected to inflammation, hormones, digestion, or autoimmune activity?</li>
+        <li>Are there specific triggers in my food, stress, sleep, or flare history that you want me to keep tracking?</li>
+        <li>Do these patterns suggest labs, imaging, referrals, or follow-up testing we should consider?</li>
+        <li>What would you want documented before my next appointment so we can compare changes clearly?</li>
+      `;
+
+      const latestForPrint = [...entries].reverse().slice(0, 5);
+      document.getElementById('printEntries').innerHTML = latestForPrint.map(entry => `
+        <div class="border-b border-black pb-2">
+          <p><strong>${escapeHtml(entry.date)}</strong> — ${escapeHtml(entry.symptom)} (${formatValue(entry.severity, '/10')})</p>
+          <p>Flare: ${formatValue(entry.flare)} | Stress: ${formatValue(entry.stress, '/10')} | Sleep: ${formatValue(entry.sleep, ' hrs')}</p>
+          <p>Food: ${formatValue(entry.food)}</p>
+        </div>
+      `).join('');
+    }
+
+    function handlePrint() {
+      if (entries.length === 0) {
+        alert('Add at least one entry before printing.');
+        return;
+      }
+
+      const email = prompt(
+        'Get your FULL Symptom Tracker + Doctor Prep flow 💜\n\nEnter your email to continue printing:'
+      );
+
+      if (email && email.includes('@')) {
+        console.log('Captured email:', email);
+        alert('Your report is being prepared. You can now print.');
+        window.print();
+      } else {
+        alert('Please enter a valid email to continue.');
+      }
+    }
+
+    function formatValue(value, suffix = '') {
+      if (value === undefined || value === null || value === '') return 'Not logged';
+      return `${value}${suffix}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    loadSavedEntries();
+  </script>
 </body>
 </html>
